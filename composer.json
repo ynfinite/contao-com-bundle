@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Ynfinite\\ComBundle\\": "src/"
+            "Ynfinite\\ContaoComBundle\\": "src/"
         },
         "classmap": [
             "src/Resources/contao/"
@@ -50,6 +50,6 @@
         "forum": "http://www.koenigspunkt-technologies.de"
     },
     "extra": {
-        "contao-manager-plugin": "Ynfinite\\ComBundle\\ContaoManager\\Plugin"
+        "contao-manager-plugin": "Ynfinite\\ContaoComBundle\\ContaoManager\\Plugin"
     }
 } 
