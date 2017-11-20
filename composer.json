@@ -1,0 +1,55 @@
+{
+    "name": "ynfinite/contao-com-bundle",
+    "type": "contao-bundle",
+    "description": "Adds the Ynfinite communication functionallity",
+    "license": "MIT",
+    "homepage": "http://www.ynfinite.de",
+    "authors": [
+        {
+            "name": "Markus Claus",
+            "email": "m.claus@koenigspunkt-technologies.de",
+            "homepage": "http://www.ynfinite.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.0",
+        "symfony/framework-bundle": "~3.3",
+        "contao/core-bundle": "~4.4.0"
+    },
+    "require-dev": {
+        "contao/manager-plugin": "~2.0"
+    },
+    "conflict": {
+        "contao/core": "*",
+        "contao/manager-plugin": "<2.0 || >=3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ynfinite\\ComBundle\\": "src/"
+        },
+        "classmap": [
+            "src/Resources/contao/"
+        ],
+        "exclude-from-classmap": [
+            "src/Resources/contao/config/",
+            "src/Resources/contao/dca/",
+            "src/Resources/contao/languages/",
+            "src/Resources/contao/templates/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ynfinite\\ContaoComBundle\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist"
+    },
+    "support": {
+        "forum": "http://www.koenigspunkt-technologies.de"
+    },
+    "extra": {
+        "contao-manager-plugin": "Ynfinite\\ComBundle\\ContaoManager\\Plugin"
+    }
+} 

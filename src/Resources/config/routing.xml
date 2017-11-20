@@ -1,0 +1,3 @@
+hallo_welt:
+    path:     /hallo_welt
+    defaults: { _controller: YnfiniteComBundle:Com:helloworld }
