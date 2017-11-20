@@ -1,6 +1,6 @@
 <?php
 
-/*namespace Ynfinite\ContaoComBundle\Controller;
+namespace Ynfinite\ContaoComBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,4 +14,3 @@ class ComController extends Controller{
 		);
 	}
 }
-*/
