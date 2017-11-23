@@ -1,3 +1,9 @@
-hallo_welt:
-    path:     /hallo_welt/
-    defaults: { _controller: "YnfiniteComBundle:Com:helloworld" }
+ynfinite-contao-com-load:
+  path: /ynfinite/com/lead/
+  defaults:
+    _controller: "YnfiniteContaoComBundle:Lead:index"
+
+ynfinite-contao-com-send:
+  path: /ynfinite/com/lead/send
+  defaults:
+    _controller: "YnfiniteContaoComBundle:Lead:send"

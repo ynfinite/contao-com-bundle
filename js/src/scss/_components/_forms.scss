@@ -1,0 +1,93 @@
+.lead-form-container {
+	.form,
+	.result {
+		opacity: 1;
+		transition: opacity .3s 0s ease;
+		height: auto;
+	}
+
+	.hidden {
+		height: 0;
+		overflow: hidden;
+		opacity: 0;
+	}
+
+	.form {
+		.widget {
+			margin: 2rem 0;
+			input, select {
+				padding: 0.5rem 1rem;
+				border: 1px solid lightgrey;
+			}
+
+			border-left: 2px solid $white;
+			padding-left: 1rem;
+			margin-left: -1rem;
+
+			&.hasError {
+				border-left: 2px solid orange;
+			}
+
+			&.text {
+			}
+
+			&.select {
+			}
+
+			.checkbox {
+				@include flex-start();
+				align-items: center;
+				-webkit-align-items: center;
+
+				input {
+					margin-right: 1rem;
+				}
+			}
+
+			.checkbox-group {
+				@include flex-start();
+
+				.checkbox {
+					margin-right: 2rem;
+				}
+			}
+
+			label {
+				display: block;
+			}
+
+			&.submit {
+				input {
+					width: auto;
+					padding: 1rem 1rem;
+					width: auto;
+
+					border: 1px solid $primaryColor;
+					border-radius: 0.5rem;
+
+					font-size: 1.6rem;
+
+					transition: all .3s 0s ease;
+					text-align: center;
+
+					background-color: $primaryColor;
+					color: $white;
+
+					outline: none;
+					&:hover {
+						background-color: $primaryColorHover;
+					}
+				}
+			}
+		}
+
+		.error {
+			font-size: 1.4rem;
+			margin-top: 0.25rem;
+			&::before {
+				@include fa-content("\f071", 1.6rem, 1rem);
+				color: orange;
+			}
+		}
+	}
+}

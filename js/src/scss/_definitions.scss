@@ -1,0 +1,69 @@
+/* Definitions */
+
+$mainFontSize: 62.5%;
+$containerWidth: 80%;
+
+$primaryColor: #fdb813;
+$primaryColorHover: #db9b02;
+$secondaryColor: rgba(1,1,1,1);
+
+$black: #363d41;
+$white: rgba(255,255,255,1);
+
+$red: #ea4d39;
+$blue: #007bb0;
+
+$darkGrey: #818a91;
+$grey: #e2e8ec;
+$lightGrey: #f5f7f9;
+
+$mainFontFamily: "Arial";
+$textColor: rgba(71,71,71,1);
+
+/**
+ * Grid setup
+ *
+ * The grid will calculate dimensions based on these two variables:
+ * $fg-columns will inform the grid loops how many columns there should be.
+ * $fg-gutter will inform the grid loops how big eac column's gutters should be.
+ *
+ * The grid will name columns, rows, offsets based on these three variables:
+ * $fg-class-row string used for the row class
+ * $fg-class-col string used for the column class
+ * $fg-class-off string used for the offset class
+ */
+$fg-columns: 12 !default;
+$fg-gutter: 2rem !default;
+
+$fg-class-row: 'row' !default;
+$fg-class-col: 'col' !default;
+$fg-class-off: 'off' !default;
+
+/**
+ * Break point namespace object
+ *
+ * Set the default namespace object with these defaults with the
+ * understanding that you can pass in whatever you might require for your site.
+ *
+ * $fg-breakpoints is a Sass list with nested lists inside. Each sub list defines two things.
+ * 1. The namespace for that breakpoint. (Required) (i.e. xs, sm, md, lg)
+ * 2. The min-width measurement for the breakpoint for that namespace. (i.e. 48em, 62em, 75em)
+ *
+ * Note: These should be in the proper order (at least till libsass handles map keys properly).
+ *
+ * Note: If the measurement is left out then it will be skipped when generating
+ * the grid and applied to global styles.
+ *
+ */
+$fg-breakpoints: (
+  (xs),
+  (sm, 768px),
+  (md, 992px),
+  (lg, 1200px)
+) !default;
+
+/* Media Breakpoints */
+$mediaLargeDevices: "(min-widht: 1200px)";
+$mediaMedium: "(max-width: 1200px)";
+$mediaSmall: "(max-width: 992px)";
+$mediaXtraSmall: "(max-width: 760px)";

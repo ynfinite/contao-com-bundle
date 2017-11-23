@@ -1,5 +1,5 @@
 <?php
-/*
+
 namespace Ynfinite\ContaoComBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -14,4 +14,3 @@ class Configuration implements ConfigurationInterface {
 		return $treeBuilder;
 	}
 }
-*/

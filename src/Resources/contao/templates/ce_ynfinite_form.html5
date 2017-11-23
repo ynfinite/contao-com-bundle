@@ -1,0 +1,8 @@
+<div 
+	data-ynfinite-component="<?= uniqid(); ?>"
+	data-target="ynfinite/com/lead/send"
+	data-token=<?= $this->requestToken; ?>
+	data-leadType="<?= $this->leadType; ?>"
+	data-fields="<?= $this->fields; ?>"
+>
+</div>

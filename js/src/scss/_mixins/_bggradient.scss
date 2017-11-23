@@ -1,0 +1,7 @@
+@mixin bg-gradient-toBottom ($startColor, $endColor) {
+	background: #ffffff;
+	background: -moz-linear-gradient(top, $startColor 0%, $endColor 100%);
+	background: -webkit-linear-gradient(top, $startColor 0%, $endColor 100%);
+	background: linear-gradient(to bottom, $startColor 0%, $endColor 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$startColor', endColorstr='$endColor',GradientType=0 );
+}

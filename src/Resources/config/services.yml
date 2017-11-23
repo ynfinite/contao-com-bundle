@@ -1,0 +1,5 @@
+services:
+  ynfinite.contao-com.listener.communication:
+    class: 'Ynfinite\ContaoComBundle\EventListener\YnfiniteCommunicationService'
+    arguments:
+      - "@contao.framework"
