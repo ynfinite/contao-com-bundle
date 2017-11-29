@@ -28,26 +28,23 @@ class YnfiniteCommunicationService {
 
 	}
 
-	public function debugIt($data, $leadType, $appId = "") {
-		$result = $this->sendLead($data, $leadType, $appId);
-		return $result;
-		//return curl_getinfo($this->curlSession);
+	public function debugIt($data, $parentData, $leadType, $appId = "") {
+		$result = $this->sendLead($data, $parentData, $leadType, $appId);
+		return array("result" => $result, "data" => $data, "parentData" => $parentData, "type" => $leadType, "sessioninfo" => curl_getinfo($this->curlSession));
 	}
 
-	public function sendLead($data, $leadTypeId, $appId) {
+	public function sendLead($data, $parentData = null, $leadTypeId, $appId) {
 		$requestData = array( "content" => $data, "content_type_id" => $leadTypeId);
-		$result = $this->doCurl("http://staging-server.ynfinite.de/v1/content/p/", "PUT", $requestData);
-		$info = curl_getinfo($this->curlSession);
-		switch($info['http_code']) {
-			case 201:
-				return array("data" => $result, "appId" => $appId, "status" => $info['http_code']);
-			break;
+		if($parentData) {
+			$requestData['parent'] = array( "content" => $parentData);
 		}
-		return array("data" => $result, "appId" => $appId, "status" => $info['http_code']);
+		$result = $this->doCurl("http://staging-server.ynfinite.de/v1/content/p/", "PUT", $requestData);
+		
+		return array("result" => $result, "info" => curl_getinfo($this->curlSession));
 	}
 
 	public function fetchContentTypesLeads() {
-		$result = $this->doCurl("http://staging-server.ynfinite.de/v1/content_type/p/lead");
+		$result = $this->doCurl("http://staging-server.ynfinite.de/v1/content_type/p/request");
 		$result = json_decode($result);
 		
 		$options = array();
@@ -56,14 +53,6 @@ class YnfiniteCommunicationService {
 			$options[$contentType->_id] = $contentType->name;
 		}
 		return $options;
-	}
-
-	public function fetchContentTypesContent() {
-		$result = $this->doCurl("http://staging-server.ynfinite.de/v1/content_type/p/content");
-		return array(
-			"33333" => "Immobilien",
-			"44444" => "Produkte"
-		);
 	}
 
 	public function getContentTypeFieldOptions($contentTypeId) {
@@ -82,7 +71,17 @@ class YnfiniteCommunicationService {
 		$result = $this->doCurl("http://staging-server.ynfinite.de/v1/content_type/p/".$contentTypeId);
 		$result = json_decode($result);
 
-		return $result->formElements;
+		$fields = $result->formElements;
+		if($result->parent->_id) {
+			$parentFields = array();
+			foreach($result->parent->formElements as $field) {
+				$field->config->field_name = "__parent__".$field->config->field_name;
+				$parentFields[] = $field;
+			}
+			$fields = array_merge($fields, $parentFields);
+		}
+
+		return $fields;
 	}
 
 	private function doCurl($url, $httpMethod="GET", $data = null) {

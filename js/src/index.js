@@ -19,9 +19,12 @@ if(ynfiniteContainer) {
 		var target = container.dataset.target;
 		var leadType = container.dataset.leadtype;
 		var fields = JSON.parse(container.dataset.fields);
+		var formId = container.dataset.formid;
+
+		console.log("Found formId", formId);
 
 		ReactDOM.render(
-		<LeadFormApp appId={appId} token={token} leadType={leadType} target={target} fields={fields} />,
+		<LeadFormApp appId={appId} formId={formId} token={token} leadType={leadType} target={target} fields={fields} />,
 			container
 		);
 	})

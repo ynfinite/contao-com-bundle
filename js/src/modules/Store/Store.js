@@ -1,6 +1,5 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import { combineReducers } from 'redux-immutable';
-import immutable from "immutable";
+import { combineReducers } from 'redux';
 
 // Middleware
 import { createLogger } from 'redux-logger'
@@ -19,5 +18,5 @@ const reducers = combineReducers({
 const middleware = applyMiddleware(promise(), thunk, createLogger());
 //const middleware = applyMiddleware(promise(), thunk);
 
-const store = createStore(reducers, immutable.fromJS({}), middleware);
+const store = createStore(reducers, {}, middleware);
 export default store;

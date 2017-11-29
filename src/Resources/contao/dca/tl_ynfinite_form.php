@@ -64,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
         )
     ),
     'palettes'	=> array(
-        'default'   => '{information_legend},title,leadType,formFields,showAdditionalFields;'
+        'default'   => '{information_legend},title,leadType,formFields,introductionText,successText,sendDataToYnfinite,sendDataViaEmail,targetEmail;'
     ),
     'fields' 	=> array(
         'id'					=> array(
@@ -114,18 +114,55 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
             'eval'              => array('multiple'=>true, 'helpwizard'=>true),
             'sql'               => "text NULL"
         ),
-        'showAdditionalFields'             => array(
-            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['showAdditionalFields'],
-            'inputType'         => 'select',
-            'options'           => array("Davor", "Dahinter"),
+        'introductionText' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['introductionText'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'textarea',
+            'eval'                    => array('mandatory'=>false, 'rte'=>'tinyMCE', 'helpwizard'=>true),
+            'explanation'             => 'insertTags',
+            'sql'                     => "mediumtext NULL"
+        ),  
+        'successText' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['successText'],
+            'exclude'                 => true,
+            'search'                  => true,
+            'inputType'               => 'textarea',
+            'eval'                    => array('mandatory'=>false, 'rte'=>'tinyMCE', 'helpwizard'=>true),
+            'explanation'             => 'insertTags',
+            'sql'                     => "mediumtext NULL"
+        ),  
+        'sendDataToYnfinite' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['sendDataToYnfinite'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('submitOnChange'=>true),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'sendDataViaEmail' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['sendDataViaEmail'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array('submitOnChange'=>true),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'targetEmail'                 => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['targetEmail'],
+            'inputType'         => 'text',
             'exculde'           => true,
+            'sorting'           => true,
+            'flag'              => 1,
+            'search'            => true,
             'eval'              => array(
                 'maxLength'     => 255,
-                'includeBlankOption' => true,
-                'tl_class'      => 'w100',
+                'tl_class'      => 'w100'
             ),
             'sql'               => "varchar(255) NOT NULL default ''"
-        ),        
+        ),     
     )
 );
 

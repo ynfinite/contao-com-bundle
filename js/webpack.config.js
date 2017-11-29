@@ -6,7 +6,7 @@ module.exports = {
 	entry: "./src/index.js",
 	output: {
 		path: path.resolve(__dirname, '../src/Resources/public/assets/js'),
-		filename: "bundle.js",
+		filename: "ynfinite.js",
 		publicPath: '/'
 	},
 	resolve: {

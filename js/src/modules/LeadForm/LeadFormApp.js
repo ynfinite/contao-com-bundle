@@ -16,7 +16,14 @@ export default class LeadFormApp extends Component {
 	}
 
 	componentWillMount() {
-		store.dispatch(initStore(this.props.appId, this.props.token, this.props.target, this.props.fields, this.props.leadType))
+		store.dispatch(initStore(
+			this.props.appId, 
+			this.props.token, 
+			this.props.formId, 
+			this.props.target, 
+			this.props.fields, 
+			this.props.leadType
+		))
 	}
 
 	render() {

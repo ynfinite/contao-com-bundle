@@ -2,7 +2,9 @@
 
 namespace Ynfinite;
 
-class YnfiniteFormModel extends \Model {
+use Contao\Model;
+
+class YnfiniteFormModel extends Model {
 
 	/**
 	 * Table name

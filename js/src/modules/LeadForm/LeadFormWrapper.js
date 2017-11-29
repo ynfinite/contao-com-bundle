@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 
 import {connect} from 'react-redux';
 
+import _ from 'lodash';
+
 import LeadForm from './LeadForm';
 
 import TextField from "./components/TextField";
@@ -36,66 +38,83 @@ class LeadFormWrapper extends Component {
 		this.props.dispatch(LeadFormActions.changeData(fieldName, value, this.props.appId));
 	}
 
-	sendData() {
-		var formData = this.props.leadForms.getIn([this.props.appId, "data"]);
+	
+	buildOptions(data) {
+		let options = [];
+		_.forEach(data, (item, index) => {
+			options.push({key: index, value: item.name, text: item.name})
+		})
+		return options;
+	}
 
-		if(formData && formData.size > 0) {
-			formData = formData.toJS();
-		}
-		else {
-			formData = {}
-		}
+	sendData() {
+		let {formData, fields, token, target, leadType, formId} = this.props;
 
 		var errors = {}
 		
+		let realFieldNames = {};
+		_.forEach(fields, (field, index) => {
+			var fieldName = field.config.field_name;
+			if(field.config.field_name.indexOf("__parent__") == 0) {
+				fieldName = fieldName.replace("__parent__", "");
+			}
+			realFieldNames[fieldName] = field.config.name;
+		})
+
 		if(errors.size > 0) {
 			this.props.dispatch(LeadFormActions.setError(errors, this.props.appId));
 		}
 		else {
-			var token = this.props.leadForms.getIn([this.props.appId, "REQUEST_TOKEN"]);
-			var target = this.props.leadForms.getIn([this.props.appId, "target"]);
-			var leadType = this.props.leadForms.getIn([this.props.appId, "leadType"]);
-			console.log("Sending data to ", target, " with ", token, " and ", leadType, " the data is ", this.props.leadForms.getIn([this.props.appId, "data"]));
-			this.props.dispatch(LeadFormActions.sendData(target, leadType, this.props.leadForms.getIn([this.props.appId, "data"]), this.props.appId, token));
+			this.props.dispatch(LeadFormActions.sendData(target, leadType, formData, realFieldNames, this.props.appId, formId, token));
 		}
 	}
 
-	render() {
-		let errorData = this.props.leadForms.getIn([this.props.appId, "errors"]) || {};
-		let formData = this.props.leadForms.getIn([this.props.appId, "data"]) || {};
-		let sendError = this.props.leadForms.getIn([this.props.appId, "sendError"]) || "";
-		let send = this.props.leadForms.getIn([this.props.appId, "send"]) || false;
-
-		let fields = this.props.leadForms.getIn([this.props.appId, "fields"]) || [];
-
+	render() {		
+		let {formData, errorData, sendError, send, fields} = this.props;	
 		let fieldMarkup = [];
-		fields.map((field, index) => {
-			let config = field.get('config');
-			switch (field.get('type')) {
+
+		_.forEach(fields, (field, index) => {
+			let config = field.config;
+			let grid = field.grid;
+
+			let field_name = _.get(config, "field_name");
+			switch (field.type) {
 				case "text":
-					fieldMarkup.push(<TextField key={index} name={config.get('field_name')} title={config.get('name')} error={errorData[config.get('field_name')]} value={formData[config.get('field_name')]} changeFieldData={this.changeFieldData} />);
+					fieldMarkup.push(<TextField 
+						key={index} 
+						grid={grid} 
+						name={field_name} 
+						multiline={_.get(config, "multiline")}
+						title={_.get(config, "name")} 
+						error={_.get(errorData, field_name)} 
+						value={_.get(formData, field_name)} 
+						changeFieldData={this.changeFieldData} />
+					);
 				break;
-				case "checkbox_soon":
-					fieldMarkup.push(<CheckboxGroup key={index} name="city" title="Ich interessiere mich für folgende Orange Card" options={cityOptions} mandatory={true} error={errorData.city} value={formData.city} changeFieldData={this.changeSelectedCheckboxGroup} />);
-				break;
-				case "select_soonwe":
-					fieldMarkup.push(<SelectField key={index} name="amount" title="Bitte senden Sie mir" mandatory={true} options={amountOptions} error={errorData.amount} value={formData.amount} changeFieldData={this.changeSelectData} />);
+				case "select":
+					let options = this.buildOptions(_.get(config, 'items'));
+
+					fieldMarkup.push(<SelectField 
+						grid={grid} 
+						selectType={_.get(config, "selectType")}
+						key={index} 
+						name={field_name} 
+						title={_.get(config, 'name')} 
+						options={options} 
+						error={_.get(errorData, field_name)} 
+						value={_.get(formData, field_name)} 
+						changeFieldData={this.changeSelectData}
+						changeSelectedCheckboxGroup={this.changeSelectedCheckboxGroup} />);
 				break;
 			}
 		})
 
 		let description = (
-			<div className="widget explanation"></div>
+			<div className="col-xs-12 widget explanation"></div>
 		)
 
 		let resultText = (
-			<div className="resultTextContainer">
-				<p className="looksLikeH1">
-					Vielen Dank!
-				</p>
-				<p className="looksLikeH2">
-					Wir haben Ihre Anfrage erhalten die {formData.amount} Orange Card/s sind bald auf dem Weg zu Ihnen!
-				</p>
+			<div className="resultTextContainer" dangerouslySetInnerHTML={{__html: this.props.message}}>
 			</div>
 		)
 
@@ -115,7 +134,7 @@ class LeadFormWrapper extends Component {
 
 				{ 
 					sendError ?
-						<div className="sendError"><p>{sendError}</p></div>
+						<div className="col-xs-12"><p className="sendError">{sendError}</p></div>
 					:
 					""
 				}
@@ -124,9 +143,18 @@ class LeadFormWrapper extends Component {
 	}
 }
 
-const mapStateToProps = function (store) {
+const mapStateToProps = function (store, props) {
     return {
-        leadForms: store.get('leadForms'),
+        token: _.get(store, ["leadForms", props.appId, "REQUEST_TOKEN"]),
+		target: _.get(store, ["leadForms", props.appId, "target"]),
+		leadType: _.get(store, ["leadForms", props.appId, "leadType"]),
+		formId: _.get(store, ["leadForms", props.appId, "formId"]),
+        formData: _.get(store, ["leadForms", props.appId, "data"]),
+        fields: _.get(store, ["leadForms", props.appId, "fields"]),
+        errorData: _.get(store, ["leadForms", props.appId, "errors"]),
+		sendError: _.get(store, ["leadForms", props.appId, "sendError"]),
+		send: _.get(store, ["leadForms", props.appId, "send"]),
+		message: _.get(store, ["leadForms", props.appId, "message"])
     }
 }
 

@@ -1,12 +1,13 @@
 import axios from "axios";
 
 
-export const initStore = (appId, token, target, fields, leadType) => {
+export const initStore = (appId, token, formId, target, fields, leadType) => {
     return {
         type: 'INIT_STORE',
         payload: {
             appId: appId,
             token: token,
+            formId: formId,
             target: target,
             fields: fields,
             leadType: leadType
@@ -36,18 +37,20 @@ export const changeData = (fieldName, value, appId) => {
     }
 }
 
-export const sendData = (target, leadType, data, appId, token) => {
+export const sendData = (target, leadType, data, realFieldNames, appId, formId, token) => {
      let payload = {
         data: data, 
         REQUEST_TOKEN: token, 
         appId: appId,
-        leadType: leadType
+        formId: formId,
+        leadType: leadType,
+        realFieldNames: realFieldNames
     };
 
     return {
         type: 'SEND_FORM',
         payload: axios.post(target, payload).catch(error => {
-            console.log(error);
+            return {error: "There was an unexpected error, please try again later.", appId: appId};
         })
     }
 }

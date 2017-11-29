@@ -1,0 +1,10 @@
+<h3>{{ title }}</h3>
+<ul style="list-style-type: none;">
+	{% for key, value in formData %}
+		{% if value is iterable %}
+			<li>{{ attribute(realFieldNames, key) }} : {{ value|join(", ") }}</li>
+		{% else %}
+			<li>{{ attribute(realFieldNames, key) }}: {{ value }}</li>
+		{% endif %}
+	{% endfor %}
+</ul>

@@ -13,8 +13,12 @@
 	}
 
 	.form {
+		.row {
+			margin: 0 !important;
+		}
+
 		.widget {
-			margin: 2rem 0;
+			margin: 1rem 0;
 			input, select {
 				padding: 0.5rem 1rem;
 				border: 1px solid lightgrey;
@@ -22,8 +26,7 @@
 
 			border-left: 2px solid $white;
 			padding-left: 1rem;
-			margin-left: -1rem;
-
+			
 			&.hasError {
 				border-left: 2px solid orange;
 			}
@@ -34,21 +37,21 @@
 			&.select {
 			}
 
-			.checkbox {
-				@include flex-start();
-				align-items: center;
-				-webkit-align-items: center;
+			&.checkbox,
+			&.radio {
+				.widget-inner-container {
+					@include flex-start();
+					
 
-				input {
-					margin-right: 1rem;
-				}
-			}
+					.widget-option-container {
+						@include flex-start();
+						align-items: center;
+						margin-right: 2rem;
 
-			.checkbox-group {
-				@include flex-start();
-
-				.checkbox {
-					margin-right: 2rem;
+						input {
+							margin-right: 0.5rem;
+						}
+					}
 				}
 			}
 
@@ -88,6 +91,15 @@
 				@include fa-content("\f071", 1.6rem, 1rem);
 				color: orange;
 			}
+		}
+	}
+
+	.sendError {
+		font-size: 1.4rem;
+		margin-top: 0.25rem;
+		&::before {
+			@include fa-content("\f071", 1.6rem, 1rem);
+			color: orange;
 		}
 	}
 }
