@@ -1,4 +1,7 @@
+<script>
+</script>
 <div 
+	data-ynfinite-type="leadForm"
 	data-ynfinite-component="<?= uniqid(); ?>"
 	data-target="ynfinite/com/lead/send"
 	data-token="<?= $this->requestToken; ?>"

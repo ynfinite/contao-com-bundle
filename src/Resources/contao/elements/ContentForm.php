@@ -30,7 +30,8 @@ class ContentForm extends \ContentElement {
 
         $form = \Ynfinite\YnfiniteFormModel::findById($formId);
         $fields = unserialize($form->formFields);
-		$requestToken = $container->get('security.csrf.token_manager')->getToken($container->getParameter('contao.csrf_token_name'))->getValue();
+		
+        $requestToken = $container->get('security.csrf.token_manager')->getToken($container->getParameter('contao.csrf_token_name'))->getValue();
         
         $formElements = $loadDataService->getContentTypeFields($form->leadType);
 
@@ -41,6 +42,10 @@ class ContentForm extends \ContentElement {
             if($key) {
         		$outputFields[$key[0]] = $element;
         	}
+        }
+
+        if($this->authorizeForm) {
+            $this->Template->authorizationFields = $this->authorizationFields;
         }
 
         $this->Template->formId = $formId;

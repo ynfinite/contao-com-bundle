@@ -18,7 +18,15 @@ const LeadFormsReducer = (state = {}, action) => {
 			var newState = _.cloneDeep(state);
 			
 			let fieldData = [];
+			let initData = {};
 			for (var property in action.payload.fields) {
+			    
+			    var field_name = action.payload.fields[property].config.field_name;
+
+			    if(window.sessionStorage[field_name]) {
+			    	initData[field_name] = window.sessionStorage[field_name];
+			    }
+
 			    if (action.payload.fields.hasOwnProperty(property)) {
 			 		fieldData.push(action.payload.fields[property]);
 			    }
@@ -28,6 +36,7 @@ const LeadFormsReducer = (state = {}, action) => {
 				...init, 
 				REQUEST_TOKEN: action.payload.token, 
 				formId: action.payload.formId,
+				data: initData,
 				target: action.payload.target, 
 				fields: fieldData,
 				leadType: action.payload.leadType

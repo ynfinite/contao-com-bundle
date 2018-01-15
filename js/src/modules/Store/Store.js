@@ -15,8 +15,8 @@ const reducers = combineReducers({
 	leadForms: leadFormsReducer,
 })
 
-const middleware = applyMiddleware(promise(), thunk, createLogger());
-//const middleware = applyMiddleware(promise(), thunk);
+//const middleware = applyMiddleware(promise(), thunk, createLogger());
+const middleware = applyMiddleware(promise(), thunk);
 
 const store = createStore(reducers, {}, middleware);
 export default store;

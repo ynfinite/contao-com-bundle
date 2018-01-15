@@ -3,6 +3,7 @@ require("./scss/main.scss");
 require('smoothscroll-polyfill').polyfill();
 
 import 'babel-polyfill';
+import 'nodelist-foreach-polyfill';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -20,9 +21,7 @@ if(ynfiniteContainer) {
 		var leadType = container.dataset.leadtype;
 		var fields = JSON.parse(container.dataset.fields);
 		var formId = container.dataset.formid;
-
-		console.log("Found formId", formId);
-
+		
 		ReactDOM.render(
 		<LeadFormApp appId={appId} formId={formId} token={token} leadType={leadType} target={target} fields={fields} />,
 			container

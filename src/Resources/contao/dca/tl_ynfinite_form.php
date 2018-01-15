@@ -5,7 +5,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
     'config' => array(
         'dataContainer'		=> 'Table',
         'switchToEdit'		=> true,
-        'ctable'            => array('tl_ynfinite_form_field'),
+        'ctable'            => array('tl_ynfinite_form_hooks'),
         'enableVersioning' 	=> true,
         'sql'				=> array (
             'keys'			=> array(
@@ -33,15 +33,15 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
             )
         ),
         'operations' => array(
-            'edit'				=> array(
-                'label'			=> &$GLOBALS['TL_LANG']['tl_ynfinite_form']['edit'],
-                'href'          => 'table=tl_ynfinite_form_field',
-                'icon'			=> 'edit.svg'
-            ),
-            'editForm'              => array(
-                'label'         => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['editForm'],
+            'edit'              => array(
+                'label'         => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['edit'],
                 'href'          => 'act=edit',
-                'icon'          => 'header.svg'
+                'icon'          => 'edit.svg'
+            ),
+            'editHooks'             => array(
+                'label'         => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['editHooks'],
+                'href'          => 'table=tl_ynfinite_form_hooks',
+                'icon'          => 'header.svg'                
             ),
             'copy' => array
             (
@@ -64,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
         )
     ),
     'palettes'	=> array(
-        'default'   => '{information_legend},title,leadType,formFields,introductionText,successText,sendDataToYnfinite,sendDataViaEmail,targetEmail;'
+        'default'   => '{information_legend},title,leadType,formFields,introductionText,successText;{authorize_legend},authorizeForm,authorizationFields,sendAuthorizationTo;{send_legend},sendDataToYnfinite,sendDataViaEmail,targetEmail;'
     ),
     'fields' 	=> array(
         'id'					=> array(
@@ -139,15 +139,39 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
             'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['sendDataToYnfinite'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('submitOnChange'=>true),
+            'eval'                    => array(),
             'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'authorizeForm' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['authorizeForm'],
+            'exclude'                 => true,
+            'inputType'               => 'checkbox',
+            'eval'                    => array(),
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
+        'authorizationFields'   => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['authorizationFields'],
+            'inputType'         => 'checkboxWizard',
+            'options'           => array(),
+            'exculde'           => true,
+            'eval'              => array('multiple'=>true),
+            'sql'               => "text NULL"
+        ),
+        'sendAuthorizationTo'   => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['sendAuthorizationTo'],
+            'inputType'         => 'select',
+            'options'           => array(),
+            'exculde'           => true,
+            'eval'              => array(),
+            'sql'               => "text NULL"
         ),
         'sendDataViaEmail' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['sendDataViaEmail'],
             'exclude'                 => true,
             'inputType'               => 'checkbox',
-            'eval'                    => array('submitOnChange'=>true),
+            'eval'                    => array(),
             'sql'                     => "char(1) NOT NULL default ''"
         ),
         'targetEmail'                 => array(
@@ -181,6 +205,8 @@ class tl_ynfinite_form extends Backend
         $fieldOptions = $loadDataService->getContentTypeFieldOptions($strValue);
 
         $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['formFields']['options'] = $fieldOptions;
+        $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['authorizationFields']['options'] = $fieldOptions;
+        $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['sendAuthorizationTo']['options'] = $fieldOptions;
 
         return $strValue;
     }

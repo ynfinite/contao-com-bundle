@@ -1,0 +1,15 @@
+<h1>Einzelner Inhalt</h1>
+
+<div class="immobilie">
+	<p>
+		Name: <?= $this->data->content->name; ?> <br />
+		Typ: <?= $this->data->content->typ; ?> <br />
+		Strasse: <?= $this->data->content->strasse; ?> <br />
+		PLZ: <?= $this->data->content->plz; ?> <br />
+		Ort: <?= $this->data->content->ort; ?> <br />
+	</p>
+</div>
+
+<?php
+	var_dump($this->data);
+?>

@@ -7,3 +7,8 @@ ynfinite-contao-com-send:
   path: /ynfinite/com/lead/send
   defaults:
     _controller: "YnfiniteContaoComBundle:Lead:send"
+
+ynfinite-contao-com-content-filter:
+  path: /ynfinite/com/content/filter
+  defaults:
+    _controller: "YnfiniteContaoComBundle:Content:filter"

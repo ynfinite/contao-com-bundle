@@ -1,0 +1,81 @@
+<?php 
+
+	$formUuid = $this->alias;
+
+	function renderTextField($field, $filterData, $formUuid) {
+		$label = $field->label;
+		if(!$label) $label = ucfirst($field->contentTypeField);
+		
+		echo '<div class="widget text" data-fieldname="'.$field->contentTypeField.'">
+			<label>'.$label.'</label>
+			<input type="text" value="'.$filterData[$field->contentTypeField].'" name="filter['.$formUuid.']['.$field->contentTypeField.']" placeholder="'.$field->placeholder.'" />
+		</div>';
+	}
+
+	function renderRangeField($field, $filterData, $formUuid) {
+		$label = $field->label;
+		if(!$label) $label = ucfirst($field->contentTypeField);
+		
+		echo '<div class="widget range" data-fieldname="'.$field->contentTypeField.'">
+			<label>'.$label.'</label>
+			<input type="text" value="'.$filterData[$field->contentTypeField][0].'" name="filter['.$formUuid.']['.$field->contentTypeField.'][]" placeholder="'.$field->placeholder.'" />
+			<input type="text" value="'.$filterData[$field->contentTypeField][1].'" name="filter['.$formUuid.']['.$field->contentTypeField.'][]" placeholder="'.$field->placeholder2.'" />
+		</div>';
+	}
+
+	function renderSelectField($field, $filterData, $formUuid) {
+		$label = $field->label;
+		if(!$label) $label = ucfirst($field->contentTypeField);
+		
+		$options = "";
+		$field->options = unserialize($field->options);
+		foreach($field->options as $option) {
+			if($filterData[$field->contentTypeField] == $option) {
+				$options .= "<option selected value='".$option."'>".$option."</option>";	
+			}
+			else {
+				$options .= "<option value='".$option."'>".$option."</option>";
+			}
+			
+		}
+
+		echo '<div class="widget select" data-fieldname="'.$field->contentTypeField.'">
+			<label>'.$label.'</label>
+			<select name="filter['.$formUuid.']['.$field->contentTypeField.']">
+				<option value="">-</option>
+				'.$options.'
+			</select>
+		</div>';
+	}
+
+	function renderHiddenField($field, $filterData, $formUuid) {		
+		echo '<input type="hidden" value="'.$field->value.'" name="filter['.$formUuid.']['.$field->contentTypeField.']" />';
+	}
+?>
+
+<div class="ce_ynfinite_filter_form block">
+	<form method="GET">
+		<?php foreach($this->Template->fields as $field) : 
+			switch($field->type) :
+				case "text":
+					renderTextField($field, $this->filterData, $formUuid);
+					break;
+				case "range":
+					renderRangeField($field, $this->filterData, $formUuid);
+					break;
+				case "select":
+					renderSelectField($field, $this->filterData, $formUuid);
+					break;
+				case "hidden":
+					renderHiddenField($field, $this->filterData, $formUuid);
+					break;
+			endswitch;
+		endforeach; ?>
+		<button type="submit">Filtern</button>
+		<button type="reset">Zurücksetzen</button>
+	</form>	
+</div>
+	
+	
+
+</div>

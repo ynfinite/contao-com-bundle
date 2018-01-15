@@ -9,6 +9,7 @@ import LeadForm from './LeadForm';
 import TextField from "./components/TextField";
 import SelectField from "./components/SelectField";
 import CheckboxGroup from "./components/CheckboxGroup";
+import CheckboxField from "./components/CheckboxField";
 import Datenschutz from "./components/Datenschutz";
 import Newsletter from "./components/Newsletter";
 
@@ -51,6 +52,7 @@ class LeadFormWrapper extends Component {
 		let {formData, fields, token, target, leadType, formId} = this.props;
 
 		var errors = {}
+		let hasErrors = false;
 		
 		let realFieldNames = {};
 		_.forEach(fields, (field, index) => {
@@ -59,9 +61,14 @@ class LeadFormWrapper extends Component {
 				fieldName = fieldName.replace("__parent__", "");
 			}
 			realFieldNames[fieldName] = field.config.name;
+
+			if(field.config.required && !formData[field.config.field_name]){
+				errors[field.config.field_name] = "Bitte füllen Sie dieses Feld aus.";
+				hasErrors = true;
+			}
 		})
 
-		if(errors.size > 0) {
+		if(hasErrors) {
 			this.props.dispatch(LeadFormActions.setError(errors, this.props.appId));
 		}
 		else {
@@ -72,7 +79,6 @@ class LeadFormWrapper extends Component {
 	render() {		
 		let {formData, errorData, sendError, send, fields} = this.props;	
 		let fieldMarkup = [];
-
 		_.forEach(fields, (field, index) => {
 			let config = field.config;
 			let grid = field.grid;
@@ -81,9 +87,11 @@ class LeadFormWrapper extends Component {
 			switch (field.type) {
 				case "text":
 					fieldMarkup.push(<TextField 
-						key={index} 
+						key={_.get(config, "name")}
 						grid={grid} 
-						name={field_name} 
+						name={field_name}
+						hidden={_.get(config, "hidden")}
+						required={_.get(config, "required")}
 						multiline={_.get(config, "multiline")}
 						title={_.get(config, "name")} 
 						error={_.get(errorData, field_name)} 
@@ -97,14 +105,27 @@ class LeadFormWrapper extends Component {
 					fieldMarkup.push(<SelectField 
 						grid={grid} 
 						selectType={_.get(config, "selectType")}
-						key={index} 
+						key={_.get(config, "name")}
 						name={field_name} 
+						required={_.get(config, "required")}
 						title={_.get(config, 'name')} 
 						options={options} 
 						error={_.get(errorData, field_name)} 
 						value={_.get(formData, field_name)} 
 						changeFieldData={this.changeSelectData}
 						changeSelectedCheckboxGroup={this.changeSelectedCheckboxGroup} />);
+				break;
+				case "checkbox":
+					fieldMarkup.push(<CheckboxField 
+						key={_.get(config, "name")}
+						grid={grid}
+						name={field.name}
+						required={_.get(config, "required")}
+						title={_.get(config, "name")}
+						error={_.get(errorData, field_name)} 
+						value={_.get(formData, field_name)} 
+						changeSelectedCheckboxGroup={this.changeSelectedCheckboxGroup}
+					/>);
 				break;
 			}
 		})

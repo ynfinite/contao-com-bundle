@@ -8,11 +8,12 @@
  * @license LGPL-3.0+
  */
 
+System::loadLanguageFile('tl_form_field');
 
 /**
- * Table tl_ynfinite_form_field
+ * Table tl_ynfinite_filter_form_fields
  */
-$GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
+$GLOBALS['TL_DCA']['tl_ynfinite_filter_form_fields'] = array
 (
 
 	// Config
@@ -20,10 +21,10 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 	(
 		'dataContainer'               => 'Table',
 		'enableVersioning'            => true,
-		'ptable'                      => 'tl_ynfinite_form',
+		'ptable'                      => 'tl_ynfinite_filter_form',
 		'onload_callback' => array
 		(
-			array('tl_ynfinite_form_field', 'checkPermission')
+			array('tl_ynfinite_filter_form_fields', 'checkPermission')
 		),
 		'sql' => array
 		(
@@ -43,8 +44,8 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 			'mode'                    => 4,
 			'fields'                  => array('sorting'),
 			'panelLayout'             => 'filter;search,limit',
-			'headerFields'            => array('title'),
-			'child_record_callback'   => array('tl_ynfinite_form_field', 'listFormFields')
+			'headerFields'            => array('title', 'tstamp', 'formID', 'storeValues', 'sendViaEmail', 'recipient', 'subject'),
+			'child_record_callback'   => array('tl_ynfinite_filter_form_fields', 'listFormFields')
 		),
 		'global_operations' => array
 		(
@@ -60,41 +61,41 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		(
 			'edit' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['edit'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_form_field']['edit'],
 				'href'                => 'act=edit',
 				'icon'                => 'edit.svg'
 			),
 			'copy' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['copy'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_form_field']['copy'],
 				'href'                => 'act=paste&amp;mode=copy',
 				'icon'                => 'copy.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
 			),
 			'cut' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['cut'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_form_field']['cut'],
 				'href'                => 'act=paste&amp;mode=cut',
 				'icon'                => 'cut.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset()"'
 			),
 			'delete' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['delete'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_form_field']['delete'],
 				'href'                => 'act=delete',
 				'icon'                => 'delete.svg',
 				'attributes'          => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'toggle' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['toggle'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_form_field']['toggle'],
 				'icon'                => 'visible.svg',
 				'attributes'          => 'onclick="Backend.getScrollOffset();return AjaxRequest.toggleVisibility(this,%s)"',
-				'button_callback'     => array('tl_ynfinite_form_field', 'toggleIcon')
+				'button_callback'     => array('tl_ynfinite_filter_form_fields', 'toggleIcon')
 			),
 			'show' => array
 			(
-				'label'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['show'],
+				'label'               => &$GLOBALS['TL_LANG']['tl_form_field']['show'],
 				'href'                => 'act=show',
 				'icon'                => 'show.svg'
 			)
@@ -105,21 +106,12 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('type', 'fsType', 'multiple', 'storeFile', 'imageSubmit'),
-		'default'                     => '{type_legend},type',
-		'explanation'                 => '{type_legend},type;{text_legend},text;{expert_legend:hide},class;{template_legend:hide},customTpl',
-		'fieldsetfsStart'             => '{type_legend},type;{fconfig_legend},fsType,label;{expert_legend:hide},class;{template_legend:hide},customTpl',
-		'fieldsetfsStop'              => '{type_legend},type;{fconfig_legend},fsType;{template_legend:hide},customTpl',
-		'html'                        => '{type_legend},type;{text_legend},html;{template_legend:hide},customTpl',
-		'text'                        => '{type_legend},type,name,label;{fconfig_legend},mandatory,rgxp,placeholder;{expert_legend:hide},class,value,minlength,maxlength,accesskey,tabindex;{template_legend:hide},customTpl',
-		'password'                    => '{type_legend},type,name,label;{fconfig_legend},mandatory,rgxp,placeholder;{expert_legend:hide},class,value,minlength,maxlength,accesskey,tabindex;{template_legend:hide},customTpl',
-		'textarea'                    => '{type_legend},type,name,label;{fconfig_legend},mandatory,rgxp,placeholder;{size_legend},size;{expert_legend:hide},class,value,minlength,maxlength,accesskey,tabindex;{template_legend:hide},customTpl',
-		'select'                      => '{type_legend},type,name,label;{fconfig_legend},mandatory,multiple;{options_legend},options;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl',
-		'radio'                       => '{type_legend},type,name,label;{fconfig_legend},mandatory;{options_legend},options;{expert_legend:hide},class;{template_legend:hide},customTpl',
-		'checkbox'                    => '{type_legend},type,name,label;{fconfig_legend},mandatory;{options_legend},options;{expert_legend:hide},class;{template_legend:hide},customTpl',
-		'upload'                      => '{type_legend},type,name,label;{fconfig_legend},mandatory,extensions,maxlength;{store_legend:hide},storeFile;{expert_legend:hide},class,accesskey,tabindex,fSize;{template_legend:hide},customTpl',
-		'hidden'                      => '{type_legend},type,name,value;{fconfig_legend},mandatory,rgxp;{template_legend:hide},customTpl',
-		'captcha'                     => '{type_legend},type,label;{fconfig_legend},placeholder;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl',
-		'submit'                      => '{type_legend},type,slabel;{image_legend:hide},imageSubmit;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl'
+		'default'                     => '{type_legend},type,label,contentTypeField,operation',
+		'text'                        => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},placeholder;{expert_legend:hide},class,value,accesskey,tabindex;{template_legend:hide},customTpl',
+		'range'                        => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},placeholder,placeholder2;{expert_legend:hide},class,value,accesskey,tabindex;{template_legend:hide},customTpl',
+		'select'                      => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},multiple;{options_legend},options;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl',
+		'checkbox'                    => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend};{options_legend},options;{expert_legend:hide},class;{template_legend:hide},customTpl',
+		'hidden'                      => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},value;{template_legend:hide},customTpl'
 	),
 
 	// Subpalettes
@@ -139,7 +131,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'pid' => array
 		(
-			'foreignKey'              => 'tl_form.title',
+			'foreignKey'              => 'tl_ynfinite_filter_form.title',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
 		),
@@ -157,19 +149,40 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'type' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['type'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['type'],
 			'default'                 => 'text',
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_ynfinite_form_field', 'getFields'),
+			'options_callback'        => array('tl_ynfinite_filter_form_fields', 'getFields'),
 			'eval'                    => array('helpwizard'=>true, 'submitOnChange'=>true, 'tl_class'=>'w50'),
 			'reference'               => &$GLOBALS['TL_LANG']['FFL'],
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
+		'contentTypeField' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_filter_form_fields']['contentTypeField'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'select',
+			'options_callback'        => array('tl_ynfinite_filter_form_fields', 'getContentTypeFields'),
+			'eval'                    => array('mandatory' => true, 'tl_class'=>'w100 clr', 'submitOnChange'=> true),
+			'sql'                     => "varchar(64) NOT NULL default ''"
+		),
+		'operation' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_filter_form_fields']['operation'],
+			'default'                 => 'text',
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'select',
+			'options_callback'        => array('tl_ynfinite_filter_form_fields', 'getOperations'),
+			'eval'                    => array('helpwizard'=>true, 'tl_class'=>'w100'),
+			'sql'                     => "varchar(64) NOT NULL default ''"
+		),
 		'label' => array // "label" needs to come before "name" so it gets the "(copy)" suffix (see #1062)
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['label'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['label'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -178,7 +191,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'name' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['name'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['name'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -187,7 +200,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'text' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['text'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['text'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
@@ -197,7 +210,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'html' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['html'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['html'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'textarea',
@@ -206,19 +219,16 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'options' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['options'],
-			'exclude'                 => true,
-			'inputType'               => 'optionWizard',
-			'eval'                    => array('mandatory'=>true, 'allowHtml'=>true),
-			'xlabel' => array
-			(
-				array('tl_ynfinite_form_field', 'optionImportWizard')
-			),
-			'sql'                     => "blob NULL"
+			'label'					=> &$GLOBALS['TL_LANG']['tl_form_field']['options'],
+			'inputType'				=> 'checkboxWizard',
+            'options_callback'     => array('tl_ynfinite_filter_form_fields', 'getOptions'), 
+            'exculde'           	=> true,
+            'eval'             		=> array('multiple'=>true),
+            'sql'               	=> "text NULL"
 		),
 		'mandatory' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['mandatory'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['mandatory'],
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'checkbox',
@@ -226,26 +236,35 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'rgxp' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['rgxp'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['rgxp'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
 			'options'                 => array('digit', 'alpha', 'alnum', 'extnd', 'date', 'time', 'datim', 'phone', 'email', 'url'),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field'],
+			'reference'               => &$GLOBALS['TL_LANG']['tl_form_field'],
 			'eval'                    => array('helpwizard'=>true, 'includeBlankOption'=>true, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(32) NOT NULL default ''"
 		),
 		'placeholder' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['placeholder'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['placeholder'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
 			'eval'                    => array('decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(255) NOT NULL default ''"
 		),
+		'placeholder2' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['placeholder'],
+			'exclude'                 => true,
+			'search'                  => true,
+			'inputType'               => 'text',
+			'eval'                    => array('decodeEntities'=>true, 'maxlength'=>255, 'tl_class'=>'w50'),
+			'sql'                     => "varchar(255) NOT NULL default ''"
+		),		
 		'minlength' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['minlength'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['minlength'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'natural', 'tl_class'=>'w50'),
@@ -253,7 +272,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'maxlength' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['maxlength'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['maxlength'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'natural', 'tl_class'=>'w50'),
@@ -261,7 +280,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'size' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['size'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['size'],
 			'default'                 => array(4, 40),
 			'exclude'                 => true,
 			'inputType'               => 'text',
@@ -270,7 +289,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'multiple' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['multiple'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['multiple'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('submitOnChange'=>true, 'tl_class'=>'clr'),
@@ -278,7 +297,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'mSize' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['mSize'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['mSize'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'natural'),
@@ -286,7 +305,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'extensions' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['extensions'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['extensions'],
 			'exclude'                 => true,
 			'default'                 => 'jpg,jpeg,gif,png,pdf,doc,docx,xls,xlsx,ppt,pptx',
 			'inputType'               => 'text',
@@ -295,7 +314,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'storeFile' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['storeFile'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['storeFile'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('submitOnChange'=>true),
@@ -303,7 +322,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'uploadFolder' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['uploadFolder'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['uploadFolder'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('fieldType'=>'radio', 'tl_class'=>'clr'),
@@ -311,7 +330,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'useHomeDir' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['useHomeDir'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['useHomeDir'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('tl_class'=>'w50'),
@@ -319,7 +338,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'doNotOverwrite' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['doNotOverwrite'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['doNotOverwrite'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('tl_class'=>'w50'),
@@ -327,18 +346,18 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'fsType' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['fsType'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['fsType'],
 			'default'                 => 'fsStart',
 			'exclude'                 => true,
 			'inputType'               => 'radio',
 			'options'                 => array('fsStart', 'fsStop'),
-			'reference'               => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field'],
+			'reference'               => &$GLOBALS['TL_LANG']['tl_form_field'],
 			'eval'                    => array('helpwizard'=>true, 'submitOnChange'=>true),
 			'sql'                     => "varchar(32) NOT NULL default ''"
 		),
 		'class' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['class'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['class'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -347,7 +366,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'value' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['value'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['value'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -356,7 +375,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'accesskey' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['accesskey'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['accesskey'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -365,7 +384,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'tabindex' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['tabindex'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['tabindex'],
 			'exclude'                 => true,
 			'search'                  => true,
 			'inputType'               => 'text',
@@ -374,7 +393,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'fSize' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['fSize'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['fSize'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('rgxp'=>'natural', 'tl_class'=>'w50'),
@@ -382,16 +401,16 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'customTpl' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['customTpl'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['customTpl'],
 			'exclude'                 => true,
 			'inputType'               => 'select',
-			'options_callback'        => array('tl_ynfinite_form_field', 'getFormFieldTemplates'),
+			'options_callback'        => array('tl_ynfinite_filter_form_fields', 'getFormFieldTemplates'),
 			'eval'                    => array('includeBlankOption'=>true, 'chosen'=>true, 'tl_class'=>'w50'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'slabel' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['slabel'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['slabel'],
 			'exclude'                 => true,
 			'inputType'               => 'text',
 			'eval'                    => array('mandatory'=>true, 'maxlength'=>255, 'tl_class'=>'w50 clr'),
@@ -399,7 +418,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'imageSubmit' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['imageSubmit'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['imageSubmit'],
 			'exclude'                 => true,
 			'inputType'               => 'checkbox',
 			'eval'                    => array('submitOnChange'=>true),
@@ -407,7 +426,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
 		),
 		'singleSRC' => array
 		(
-			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form_field']['singleSRC'],
+			'label'                   => &$GLOBALS['TL_LANG']['tl_form_field']['singleSRC'],
 			'exclude'                 => true,
 			'inputType'               => 'fileTree',
 			'eval'                    => array('fieldType'=>'radio', 'filesOnly'=>true, 'mandatory'=>true, 'tl_class'=>'clr'),
@@ -422,7 +441,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form_field'] = array
  *
  * @author Leo Feyer <https://github.com/leofeyer>
  */
-class tl_ynfinite_form_field extends Backend
+class tl_ynfinite_filter_form_fields extends Backend
 {
 
 	/**
@@ -436,7 +455,7 @@ class tl_ynfinite_form_field extends Backend
 
 
 	/**
-	 * Check permissions to edit table tl_ynfinite_form_field
+	 * Check permissions to edit table tl_form_field
 	 *
 	 * @throws Contao\CoreBundle\Exception\AccessDeniedException
 	 */
@@ -481,7 +500,7 @@ class tl_ynfinite_form_field extends Backend
 				// Get form ID
 				if (Input::get('mode') == 1)
 				{
-					$objField = $this->Database->prepare("SELECT pid FROM tl_ynfinite_form_field WHERE id=?")
+					$objField = $this->Database->prepare("SELECT pid FROM tl_ynfinite_filter_form_fields WHERE id=?")
 											   ->limit(1)
 											   ->execute(Input::get('pid'));
 
@@ -503,7 +522,7 @@ class tl_ynfinite_form_field extends Backend
 			case 'show':
 			case 'delete':
 			case 'toggle':
-				$objField = $this->Database->prepare("SELECT pid FROM tl_ynfinite_form_field WHERE id=?")
+				$objField = $this->Database->prepare("SELECT pid FROM tl_ynfinite_filter_form_fields WHERE id=?")
 										   ->limit(1)
 										   ->execute($id);
 
@@ -528,7 +547,7 @@ class tl_ynfinite_form_field extends Backend
 					throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to access form ID ' . $id . '.');
 				}
 
-				$objForm = $this->Database->prepare("SELECT id FROM tl_ynfinite_form_field WHERE pid=?")
+				$objForm = $this->Database->prepare("SELECT id FROM tl_ynfinite_filter_form_fields WHERE pid=?")
 										  ->execute($id);
 
 				if ($objForm->numRows < 1)
@@ -570,15 +589,18 @@ class tl_ynfinite_form_field extends Backend
 		$arrRow['required'] = $arrRow['mandatory'];
 		$key = $arrRow['invisible'] ? 'unpublished' : 'published';
 
+		$typeName = $GLOBALS['TL_LANG']['FFL'][$arrRow['type']][0];
+		if(!$typeName) $typeNamer = $arrRow['type'];
+
 		$strType = '
-<div class="cte_type ' . $key . '">' . $GLOBALS['TL_LANG']['FFL'][$arrRow['type']][0] . ($arrRow['name'] ? ' (' . $arrRow['name'] . ')' : '') . '</div>
+<div class="cte_type ' . $key . '">' . $typeName . ($arrRow['name'] ? ' (' . $arrRow['name'] . ')' : '') . '</div>
 <div class="limit_height' . (!Config::get('doNotCollapse') ? ' h32' : '') . '">';
 
 		$strClass = $GLOBALS['TL_FFL'][$arrRow['type']];
 
 		if (!class_exists($strClass))
 		{
-			return '';
+			return $strType . $typeName . '</div>' . "\n";
 		}
 
 		/** @var Widget $objWidget */
@@ -599,25 +621,13 @@ class tl_ynfinite_form_field extends Backend
 
 
 	/**
-	 * Add a link to the option items import wizard
-	 *
-	 * @return string
-	 */
-	public function optionImportWizard()
-	{
-		return ' <a href="' . $this->addToUrl('key=option') . '" title="' . specialchars($GLOBALS['TL_LANG']['MSC']['ow_import'][1]) . '" onclick="Backend.getScrollOffset()">' . Image::getHtml('tablewizard.gif', $GLOBALS['TL_LANG']['MSC']['ow_import'][0]) . '</a>';
-	}
-
-
-	/**
 	 * Return a list of form fields
 	 *
 	 * @return array
 	 */
 	public function getFields()
 	{
-		$arrFields = $GLOBALS['TL_FFL'];
-
+		$arrFields = $GLOBALS['TL_YNFINITE_FILTER_FORM_TYPES'];
 		// Add the translation
 		foreach (array_keys($arrFields) as $key)
 		{
@@ -689,9 +699,9 @@ class tl_ynfinite_form_field extends Backend
 		}
 
 		// Trigger the onload_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_ynfinite_form_field']['config']['onload_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_form_field']['config']['onload_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_ynfinite_form_field']['config']['onload_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_form_field']['config']['onload_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -706,7 +716,7 @@ class tl_ynfinite_form_field extends Backend
 		}
 
 		// Check the field access
-		if (!$this->User->hasAccess('tl_ynfinite_form_field::invisible', 'alexf'))
+		if (!$this->User->hasAccess('tl_ynfinite_filter_form_fields::invisible', 'alexf'))
 		{
 			throw new Contao\CoreBundle\Exception\AccessDeniedException('Not enough permissions to publish/unpublish form field ID ' . $intId . '.');
 		}
@@ -714,7 +724,7 @@ class tl_ynfinite_form_field extends Backend
 		// Set the current record
 		if ($dc)
 		{
-			$objRow = $this->Database->prepare("SELECT * FROM tl_ynfinite_form_field WHERE id=?")
+			$objRow = $this->Database->prepare("SELECT * FROM tl_ynfinite_filter_form_fields WHERE id=?")
 									 ->limit(1)
 									 ->execute($intId);
 
@@ -724,16 +734,16 @@ class tl_ynfinite_form_field extends Backend
 			}
 		}
 
-		$objVersions = new Versions('tl_ynfinite_form_field', $intId);
+		$objVersions = new Versions('tl_ynfinite_filter_form_fields', $intId);
 		$objVersions->initialize();
 
 		// Reverse the logic (form fields have invisible=1)
 		$blnVisible = !$blnVisible;
 
 		// Trigger the save_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_ynfinite_form_field']['fields']['invisible']['save_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_form_field']['fields']['invisible']['save_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_ynfinite_form_field']['fields']['invisible']['save_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_form_field']['fields']['invisible']['save_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -750,7 +760,7 @@ class tl_ynfinite_form_field extends Backend
 		$time = time();
 
 		// Update the database
-		$this->Database->prepare("UPDATE tl_ynfinite_form_field SET tstamp=$time, invisible='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
+		$this->Database->prepare("UPDATE tl_ynfinite_filter_form_fields SET tstamp=$time, invisible='" . ($blnVisible ? '1' : '') . "' WHERE id=?")
 					   ->execute($intId);
 
 		if ($dc)
@@ -760,9 +770,9 @@ class tl_ynfinite_form_field extends Backend
 		}
 
 		// Trigger the onsubmit_callback
-		if (is_array($GLOBALS['TL_DCA']['tl_ynfinite_form_field']['config']['onsubmit_callback']))
+		if (is_array($GLOBALS['TL_DCA']['tl_form_field']['config']['onsubmit_callback']))
 		{
-			foreach ($GLOBALS['TL_DCA']['tl_ynfinite_form_field']['config']['onsubmit_callback'] as $callback)
+			foreach ($GLOBALS['TL_DCA']['tl_form_field']['config']['onsubmit_callback'] as $callback)
 			{
 				if (is_array($callback))
 				{
@@ -778,4 +788,54 @@ class tl_ynfinite_form_field extends Backend
 
 		$objVersions->create();
 	}
+
+	public function getContentTypeFields(DataContainer $dc)
+	{
+		if($dc->activeRecord->pid) {
+			$objFilter = $this->Database->prepare("SELECT * FROM tl_ynfinite_filter_form WHERE id=?")
+											   ->limit(1)
+											   ->execute($dc->activeRecord->pid);
+			if ($objFilter->numRows < 1)
+			{
+				throw new Contao\CoreBundle\Exception\AccessDeniedException('Can`t find any filter with ' . json_encode($dc->activeRecord->pid) . '.');
+			}
+
+
+			$typeId = $objFilter->contentType;
+
+			$loadDataService = \Contao\System::getContainer()->get("ynfinite.contao-com.listener.communication");
+	        $fieldOptions = $loadDataService->getContentTypeFieldOptions($typeId);
+
+			return $fieldOptions;
+		}
+		else {
+			return array();
+		}
+	}
+
+	public function getOptions(DataContainer $dc) {
+		$objFilter = $this->Database->prepare("SELECT * FROM tl_ynfinite_filter_form WHERE id=?")
+										   ->limit(1)
+										   ->execute($dc->activeRecord->pid);
+		if ($objFilter->numRows < 1)
+		{
+			throw new Contao\CoreBundle\Exception\AccessDeniedException('Can`t find any filter with ' . json_encode($dc->activeRecord->pid) . '.');
+		}
+
+
+		$typeId = $objFilter->contentType;
+
+		$loadDataService = \Contao\System::getContainer()->get("ynfinite.contao-com.listener.communication");
+        
+        $items = $loadDataService->getContentTypeFieldItems($typeId, $dc->activeRecord->contentTypeField);
+        var_dump($items);
+
+        return $items;
+	}
+
+	public function getOperations() {
+		$arrOperations = $GLOBALS['TL_YNFINITE_FILTER_OPERATIONS'];
+		return $arrOperations;
+	}
+
 }

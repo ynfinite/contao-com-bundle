@@ -18,7 +18,7 @@ class SelectField extends Component {
 	render() {
 		let optionsMarkup = []
 
-		let widgetClasses = 'widget text col-xs-12';
+		let widgetClasses = 'widget select col-xs-12';
 		
 		if(this.props.error) {
 			widgetClasses += " hasError";
@@ -50,7 +50,6 @@ class SelectField extends Component {
 					let isChecked = false;
 					if(this.props.value && this.props.value.indexOf(option.value) > -1) {
 						isChecked = true;
-
 					}
 					optionsMarkup.push(
 						<div className="widget-option-container" key={index}>
@@ -86,8 +85,8 @@ class SelectField extends Component {
 				<label htmlFor={this.props.name}>
 					{this.props.title}
 					{
-						this.props.mandatory ?
-							<span className="isMandatory">*</span>
+						this.props.required ?
+							<span className="isRequired">*</span>
 						:
 						""
 					}

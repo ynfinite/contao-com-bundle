@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class LeadController extends Controller{
 	
+	private $config;
+
 	public function indexAction(Request $request){
 
 		$requestContent = json_decode($request->getContent());
@@ -47,6 +49,7 @@ class LeadController extends Controller{
 		// Intitalize contao framework. Needed to use Contao3 content e.g. Models
 		$contaoFramework = $this->get('contao.framework');
 		$contaoFramework->initialize();
+		$this->config = $contaoFramework->getAdapter(Config::class);
 
 		// Get data from request
 		$requestContent = json_decode($request->getContent());
@@ -73,9 +76,13 @@ class LeadController extends Controller{
 
 		if($form->sendDataViaEmail && $form->targetEmail) {
 			$formData = array_merge($contentFields, $parentFieldsArray);
+
+			$fromEmail = $this->config->get("adminEmail");
+			if(!$fromEmail) $fromEmail = "noreply@".$_SERVER['HTTP_HOST'];
+
 			$mailer = $this->get("mailer");
 			$message = new \Swift_Message($form->title);
-			$message->setFrom("ynfinite@koenigspunkt.de")
+			$message->setFrom($fromEmail)
 				->setTo($form->targetEmail)
 				->setBody($this->renderView('@YnfiniteContaoCom/Emails/sendform.html.twig', array(
 					"realFieldNames" => $realFieldNames,
@@ -89,8 +96,8 @@ class LeadController extends Controller{
 
 		$resultData = array();
 
+		$loadDataService = $this->get("ynfinite.contao-com.listener.communication");
 		if($form->sendDataToYnfinite) {
-			$loadDataService = $this->get("ynfinite.contao-com.listener.communication");
 			$result = $loadDataService->sendLead($contentFields, $parentFieldsArray, $requestContent->leadType, $requestContent->appId);
 			
 			switch($result['info']['http_code']) {
@@ -99,7 +106,7 @@ class LeadController extends Controller{
 						"success" => true,
 						"mailSuccess" => $mailSuccess,
 						"data" => $result["result"], 
-						"message" => $form->successText,
+						"message" => $loadDataService->parseText($form->successText, $formData),
 						"appId" => $requestContent->appId, 
 						"status" => $result['info']['http_code']
 					);
@@ -112,7 +119,7 @@ class LeadController extends Controller{
 						"success" => false,
 						"mailSuccess" => $mailSuccess,
 						"data" => $result["result"], 
-						"message" => $form->successText,
+						"message" => $loadDataService->parseText($form->successText, $formData),
 						"appId" => $requestContent->appId, 
 						"status" => $result['info']['http_code']
 					);
@@ -120,7 +127,7 @@ class LeadController extends Controller{
 			}
 		}
 		else {
-			$resultData = array("success" => true, "mailSuccess" => $mailSuccess, "status" => 200, "message" => $form->successText, "appId" => $requestContent->appId);
+			$resultData = array("success" => true, "mailSuccess" => $mailSuccess, "status" => 200, "message" => $loadDataService->parseText($form->successText, $formData), "appId" => $requestContent->appId);
 		}
 
 		return new JsonResponse($resultData);
