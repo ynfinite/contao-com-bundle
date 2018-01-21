@@ -29,7 +29,7 @@ class ContentFilterForm extends \ContentElement {
         
 
         $filter = \Ynfinite\YnfiniteFilterFormModel::findById($filterId);
-        $filterFields = \Ynfinite\YnfiniteFilterFormFieldsModel::findByPid($filter->id);
+        $filterFields = \Ynfinite\YnfiniteFilterFormFieldsModel::findByPid($filter->id, array("order" => "sorting"));
 
         $filterData = \Input::get("filter")[$filter->alias];
 		

@@ -7,7 +7,7 @@
 		if(!$label) $label = ucfirst($field->contentTypeField);
 		
 		echo '<div class="widget text" data-fieldname="'.$field->contentTypeField.'">
-			<label>'.$label.'</label>
+			<label for="filter['.$formUuid.']['.$field->contentTypeField.'">'.$label.'</label>
 			<input type="text" value="'.$filterData[$field->contentTypeField].'" name="filter['.$formUuid.']['.$field->contentTypeField.']" placeholder="'.$field->placeholder.'" />
 		</div>';
 	}
@@ -17,7 +17,7 @@
 		if(!$label) $label = ucfirst($field->contentTypeField);
 		
 		echo '<div class="widget range" data-fieldname="'.$field->contentTypeField.'">
-			<label>'.$label.'</label>
+			<label for="filter['.$formUuid.']['.$field->contentTypeField.'">'.$label.'</label>
 			<input type="text" value="'.$filterData[$field->contentTypeField][0].'" name="filter['.$formUuid.']['.$field->contentTypeField.'][]" placeholder="'.$field->placeholder.'" />
 			<input type="text" value="'.$filterData[$field->contentTypeField][1].'" name="filter['.$formUuid.']['.$field->contentTypeField.'][]" placeholder="'.$field->placeholder2.'" />
 		</div>';
@@ -40,7 +40,7 @@
 		}
 
 		echo '<div class="widget select" data-fieldname="'.$field->contentTypeField.'">
-			<label>'.$label.'</label>
+			<label for="filter['.$formUuid.']['.$field->contentTypeField.'">'.$label.'</label>
 			<select name="filter['.$formUuid.']['.$field->contentTypeField.']">
 				<option value="">-</option>
 				'.$options.'
@@ -71,11 +71,9 @@
 					break;
 			endswitch;
 		endforeach; ?>
-		<button type="submit">Filtern</button>
-		<button type="reset">Zurücksetzen</button>
+		<div class="form-controls">
+			<button type="submit">Filtern</button>
+			<button type="reset">Zurücksetzen</button>
+		</div>
 	</form>	
-</div>
-	
-	
-
 </div>

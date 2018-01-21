@@ -600,7 +600,7 @@ class tl_ynfinite_filter_form_fields extends Backend
 
 		if (!class_exists($strClass))
 		{
-			return $strType . $typeName . '</div>' . "\n";
+			return $strType . $typeName . ' '. $arrRow['label'] .'</div>' . "\n";
 		}
 
 		/** @var Widget $objWidget */

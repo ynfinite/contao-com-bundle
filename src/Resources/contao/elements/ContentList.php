@@ -95,16 +95,18 @@ class ContentList extends \ContentElement {
             $objPage = \Contao\PageModel::findWithDetails($this->ynfinite_jumpTo);
             if($objPage) {
                 $finalContent = array();
-                foreach($content->hits as $singleContent) {
-                    if($aliasField) {
-                        $alias = $singleContent->content->$aliasField;
-                        
+                if(count($content->hits) > 0) {
+                    foreach($content->hits as $singleContent) {
+                        if($aliasField) {
+                            $alias = $singleContent->content->$aliasField;
+                            
+                        }
+                        else {
+                            $alias = $singleContent->content->alias;
+                        }
+                        $singleContent->jumpTo = $objPage->getFrontendUrl("/".$alias);
+                        $finalContent[] = $singleContent;
                     }
-                    else {
-                        $alias = $singleContent->content->alias;
-                    }
-                    $singleContent->jumpTo = $objPage->getFrontendUrl("/".$alias);
-                    $finalContent[] = $singleContent;
                 }
 
                 $this->Template->data = $finalContent;
@@ -117,7 +119,7 @@ class ContentList extends \ContentElement {
             $this->Template->data = $content;
         }
 
-        $pagination = array("page" => $page, "total" => $content->total);
+        $pagination = array("page" => $page, "total" => $content->total, "maxPages" => (int)($content->total / $this->ynfinite_perPage));
         $this->Template->pagination = $pagination;
 
         $this->Template->selfUrl = $this->generateSelfUrl();

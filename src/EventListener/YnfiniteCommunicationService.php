@@ -85,8 +85,10 @@ class YnfiniteCommunicationService {
 		
 		$options = array();
 
-		foreach($formElements as $field) {
-			$options[$field->config->field_name] = $field->config->name;
+		if(count($formElements) > 0) {
+			foreach($formElements as $field) {
+				$options[$field->config->field_name] = $field->config->name;
+			}
 		}
 		
 		return $options;
@@ -97,11 +99,13 @@ class YnfiniteCommunicationService {
 
 		$items = array();
 		
-		foreach($formElements as $field) {
-			if($field->config->field_name == $fieldName) {
-				if($field->config->items) {
-					foreach($field->config->items as $item) {
-						$items[] = $item->name;
+		if(count($formElements) > 0) {
+			foreach($formElements as $field) {
+				if($field->config->field_name == $fieldName) {
+					if($field->config->items) {
+						foreach($field->config->items as $item) {
+							$items[] = $item->name;
+						}
 					}
 				}
 			}
@@ -188,14 +192,10 @@ class YnfiniteCommunicationService {
 			
 			$result=curl_exec($this->curlSession);
 			
+
 			if($httpMethod == "GET") {
-				$cache = new YnfiniteCacheModel();
-				$cache->url = $url;
-				$cache->methode = $httpMethod;
-				$cache->data = json_encode($data);
-				$cache->result = json_encode($result);
-				$cache->created = time();
-				$cache->save();
+				// generate cache
+				$this->cacheData($url, $httpMethod, $data, $result);
 			}
 		}
 		else {
@@ -251,6 +251,18 @@ class YnfiniteCommunicationService {
         	$filter["filter"] = $filterFields;	
         }
         return $filter;
+	}
+
+	public function cacheData($url, $httpMethod, $data, $result){
+		$cache = new YnfiniteCacheModel();
+		$cache->url = $url;
+		$cache->methode = $httpMethod;
+		$cache->data = json_encode($data);
+		$cache->result = json_encode($result);
+		$cache->created = time();
+		$cache->save();
+
+		return $cache;
 	}
 
 	private function generateError() {
