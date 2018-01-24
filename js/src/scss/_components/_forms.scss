@@ -7,6 +7,10 @@
 		height: auto;
 	}
 
+	.form {
+		margin: 0 -1rem;
+	}
+
 	.hidden {
 		height: 0;
 		overflow: hidden;
@@ -26,7 +30,7 @@
 			}
 
 			border-left: 2px solid $white;
-			padding-left: 1rem;
+			padding: 0 1rem;
 			
 			&.hasError {
 				border-left: 2px solid orange;

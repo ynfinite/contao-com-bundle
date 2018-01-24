@@ -170,6 +170,11 @@ class ContentList extends \ContentElement {
         foreach($filterFields as $filterField) {
             $value = $filterField->value;
             
+            $container = \Contao\System::getContainer();
+            $comService = $container->get("ynfinite.contao-com.listener.communication");
+
+            $value = $comService->parseText($value);
+
             $arrFilter[$filterField->type_field] = array(
                 "operation" => $this->operationMap[$filterField->operation],
                 "value" => $value

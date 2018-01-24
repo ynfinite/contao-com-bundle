@@ -37,20 +37,37 @@ class ContentSingle extends \ContentElement {
         $container = \Contao\System::getContainer();
 
         $contentId = null;
+        $content = null;
+
+        $loadDataService = $container->get("ynfinite.contao-com.listener.communication");
 
         if(!$this->ynfinite_content_id) {
             $contentId = \Input::get('items');
+            if(!$contentId) {
+                $basename = pathinfo($_SERVER['REQUEST_URI'])['basename'];
+                $contentId = basename($basename, ".html");
+            }
+
+            if($contentId) {
+                $content = $loadDataService->getContent($contentId, $this->ynfinite_contentType);    
+
+                if($content) {
+                    $this->Template->data = $content;
+                }
+            }                            
         }
         else {
             $contentId = $this->ynfinite_content_id;
+            $content = $loadDataService->getContentById($contentId, $this->ynfinite_contentType);
+
+            if($content) {
+                $this->Template->data = $content;
+            }
+
         }
 
-        if($contentId) {
-    		$loadDataService = $container->get("ynfinite.contao-com.listener.communication");
-            $content = $loadDataService->getContent($contentId, $this->ynfinite_contentType);
-
-            $this->Template->data = $content;
-
+        if($content) {
+            
             if($this->ynfinite_set_page_title) {
                 $titelField = $this->ynfinite_title_field;
                 $objPage->pageTitle = $content->content->$titelField;

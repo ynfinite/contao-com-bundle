@@ -1,12 +1,14 @@
 <script>
 </script>
-<div 
-	data-ynfinite-type="leadForm"
-	data-ynfinite-component="<?= uniqid(); ?>"
-	data-target="ynfinite/com/lead/send"
-	data-token="<?= $this->requestToken; ?>"
-	data-leadtype="<?= $this->leadType; ?>"
-	data-fields="<?= $this->fields; ?>"
-	data-formid="<?= $this->formId; ?>"
->
+<div class="ce_ynfinite_form <?= $this->cssData[1]; ?>" <?php if($this->cssData[0]) : ?> id="<?= $this->cssData[0]; ?>" <?php endif; ?> >
+	<div 
+		data-ynfinite-type="leadForm"
+		data-ynfinite-component="<?= uniqid(); ?>"
+		data-target="ynfinite/com/lead/send"
+		data-token="<?= $this->requestToken; ?>"
+		data-leadtype="<?= $this->leadType; ?>"
+		data-fields="<?= $this->fields; ?>"
+		data-formid="<?= $this->formId; ?>"
+	>
+	</div>
 </div>

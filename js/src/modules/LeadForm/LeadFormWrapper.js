@@ -77,7 +77,7 @@ class LeadFormWrapper extends Component {
 	}
 
 	render() {		
-		let {formData, errorData, sendError, send, fields} = this.props;	
+		let {formData, errorData, sendError, send, pending, fields} = this.props;	
 		let fieldMarkup = [];
 		_.forEach(fields, (field, index) => {
 			let config = field.config;
@@ -147,6 +147,7 @@ class LeadFormWrapper extends Component {
 				description={description}
 				resultText={resultText}
 				sendData={this.sendData}
+				pending={pending}
 				send={send}
 			>
 				{fieldMarkup.map((field) => {
@@ -174,6 +175,7 @@ const mapStateToProps = function (store, props) {
         fields: _.get(store, ["leadForms", props.appId, "fields"]),
         errorData: _.get(store, ["leadForms", props.appId, "errors"]),
 		sendError: _.get(store, ["leadForms", props.appId, "sendError"]),
+		pending: _.get(store, ["leadForms", "pending"]),
 		send: _.get(store, ["leadForms", props.appId, "send"]),
 		message: _.get(store, ["leadForms", props.appId, "message"])
     }

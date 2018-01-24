@@ -150,6 +150,13 @@ class YnfiniteCommunicationService {
 		//return array("called_url" => $this->serverUrl."/v1/content/p/".$id, "result" => $result, "sessioninfo" => curl_getinfo($this->curlSession));
 	}
 
+	public function getContentById($id, $contentTypeId) {
+		$result = $this->doCurl($this->serverUrl."/v1/content/p/".$id);
+		$result = json_decode($result);
+		return $result;
+		//return array("called_url" => $this->serverUrl."/v1/content/p/".$id, "result" => $result, "sessioninfo" => curl_getinfo($this->curlSession));
+	}
+
 	private function doCurl($url, $httpMethod="GET", $data = null) {
 
 		$useCache = false;
@@ -195,7 +202,8 @@ class YnfiniteCommunicationService {
 
 			if($httpMethod == "GET") {
 				// generate cache
-				$this->cacheData($url, $httpMethod, $data, $result);
+				$cache = $this->cacheData($url, $httpMethod, $data, $result);
+				$result = json_decode($cache->result);
 			}
 		}
 		else {
@@ -206,7 +214,7 @@ class YnfiniteCommunicationService {
 		return $result;
 	}
 
-	public function parseText($text, $formData) {
+	public function parseText($text, $formData = array()) {
 		$matches = array();
 		preg_match_all("/\{\{[^\}\}]*\}\}/", $text, $matches);
 		
@@ -219,6 +227,14 @@ class YnfiniteCommunicationService {
 			switch($splitMatch[0]) {
 				case "ynfinite_form_value":
 					$text = str_replace($match, $formData[$splitMatch[1]], $text);
+				break;
+				case "ynfinite":
+					switch($splitMatch[1]) {
+						case "url_alias":
+							$basename = pathinfo($_SERVER['REQUEST_URI'])['basename'];
+		                	$text = basename($basename, ".html");
+		                break;
+					}
 				break;
 			}
 		}

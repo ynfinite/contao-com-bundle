@@ -35,7 +35,11 @@
 	    'ynfinite_content_single' => 'Ynfinite\ContentSingle'
 	);
 
-	$GLOBALS['TL_YNFINITE_HOOKS'] = array(
+	$GLOBALS['TL_HOOKS']['compileArticle'][] = array('Ynfinite\CheckArticle', 'checkVisibility');
+
+	/* YNFINITE DATA */
+
+	$GLOBALS['TL_YNFINITE_HOOKS'] = array( // Not Used Yet
 		"yh_frontend_befor_send_data",
 		"yh_frontend_after_send_data"
 	);

@@ -86,10 +86,10 @@ const LeadFormsReducer = (state = {}, action) => {
 		case "SEND_FORM_FULFILLED":
 			var newState = _.cloneDeep(state);
 
-			console.log("RETURNING PAYLOAD", action.payload);
 			var payloadData = action.payload;
 			if(payloadData.data && payloadData.data.success) {
 				if(payloadData.data.status == 201 || payloadData.data.status == 200 || payloadData.data.mailSuccess == true) {
+					newState = _.set(newState, [payloadData.data.appId, "pending"], false);
 					newState = _.set(newState, [payloadData.data.appId, "send"], true);
 					newState = _.set(newState, [payloadData.data.appId, "message"], payloadData.data.message)
 					return newState;	
@@ -102,8 +102,22 @@ const LeadFormsReducer = (state = {}, action) => {
 				return newState;
 			}
 			break;
+		case "SEND_FORM_REJECTED":
+			var newState = _.cloneDeep(state);
+			var payloadData = action.payload;
+			newState = _.set(newState, [payloadData.data.appId, "pending"], true);
+			newState = _.set(newState, [payloadData.data.appId, "sendError"], "SERVER Error. Pleader try again later.");
+			
+			return newState;
+			break;
+		case "SEND_FORM_PENDING":
+			var newState = _.cloneDeep(state);
+			
+			newState = _.set(newState, ["pending"], true);
+			return newState;
+			break;
+		
 		default: 
-
 			return state;
 	}
 }

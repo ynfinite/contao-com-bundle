@@ -15,6 +15,10 @@ class LeadForm extends Component {
 		if(this.props.send == true) {
 			formClasses += " hidden";
 		}
+		console.log("REDNERING", this.props.pending);
+		if(this.props.pending == true) {
+			formClasses += " is-pending";
+		}
 
 		var resultClasses = "result";
 		if(this.props.send == false) {

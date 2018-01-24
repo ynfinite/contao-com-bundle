@@ -48,6 +48,7 @@ class ContentForm extends \ContentElement {
             $this->Template->authorizationFields = $this->authorizationFields;
         }
 
+        $this->Template->cssData = $this->cssID;
         $this->Template->formId = $formId;
         $this->Template->requestToken = $requestToken;
         $this->Template->formId = $this->ynfinite_form_id;
