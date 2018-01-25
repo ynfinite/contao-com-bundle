@@ -24,6 +24,7 @@ class ContentSingle extends \ContentElement {
 
     protected function compile() {
         global $objPage;
+        global $objYnfiniteContent;
 
         if (TL_MODE == 'BE') {
             $this->strTemplate = 'be_wildcard';
@@ -63,8 +64,9 @@ class ContentSingle extends \ContentElement {
             if($content) {
                 $this->Template->data = $content;
             }
-
         }
+
+        $objYnfiniteContent = $content;
 
         if($content) {
             

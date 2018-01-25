@@ -6,3 +6,6 @@ $GLOBALS['TL_LANG']['MOD']['ynfinite_filter_forms'] = array("Filterformulare", "
 $GLOBALS['TL_LANG']['MOD']['ynfinite_filter'] = array("Filter", "Filter für das Anzeigen von Inhalten anlegen.");
 
 $GLOBALS['TL_LANG']['MOD']['ynfinite_cache'] = array("Cache", "Alle Inhalte und Formulare werden hier gecached.");
+
+$GLOBALS['TL_LANG']['FMD']['ynfinite'] = "Ynfinite";
+$GLOBALS['TL_LANG']['FMD']['ynfinite_article_list'] = array("Ynfinite Artikel-Liste", "Artikel-Liste die auf durch Ynfinite gesteuerte Artikel reagiert.");

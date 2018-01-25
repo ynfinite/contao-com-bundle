@@ -25,6 +25,8 @@ class ContentList extends \ContentElement {
 
     protected function compile() {
 
+        global $objYnfiniteContent;
+
         if (TL_MODE == 'BE') {
             $this->strTemplate = 'be_wildcard';
             $this->Template = new \BackendTemplate($this->strTemplate);
@@ -86,6 +88,8 @@ class ContentList extends \ContentElement {
 
             $filterData = $loadDataService->buildFilterData($arrFilter, $sort, $skip, $this->ynfinite_perPage);
         }
+
+
 
         $content = $loadDataService->getContentList($filter->contentType, $filterData, "");
 
@@ -163,9 +167,9 @@ class ContentList extends \ContentElement {
     }
 
     private function buildFilterArrayFromFilterFields($filterFields) {
-        $arrFilter = array();
-
+        global $objYnfiniteContent;
         
+        $arrFilter = array();
 
         foreach($filterFields as $filterField) {
             $value = $filterField->value;
@@ -173,7 +177,7 @@ class ContentList extends \ContentElement {
             $container = \Contao\System::getContainer();
             $comService = $container->get("ynfinite.contao-com.listener.communication");
 
-            $value = $comService->parseText($value);
+            $value = $comService->parseText($value, $objYnfiniteContent);
 
             $arrFilter[$filterField->type_field] = array(
                 "operation" => $this->operationMap[$filterField->operation],

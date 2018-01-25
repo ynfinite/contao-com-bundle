@@ -228,6 +228,9 @@ class YnfiniteCommunicationService {
 				case "ynfinite_form_value":
 					$text = str_replace($match, $formData[$splitMatch[1]], $text);
 				break;
+				case "ynfinite_from_content":
+					$text = $formData->content->{$splitMatch[1]};
+				break;
 				case "ynfinite":
 					switch($splitMatch[1]) {
 						case "url_alias":

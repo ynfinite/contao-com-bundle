@@ -28,6 +28,8 @@
 	$GLOBALS['TL_MODELS']['tl_ynfinite_filter'] = 'Ynfinite\YnfiniteFilterModel';
 	$GLOBALS['TL_MODELS']['tl_ynfinite_filter_fields'] = 'Ynfinite\YnfiniteFilterFieldsModel';
 
+	$GLOBALS['FE_MOD']['ynfinite']['ynfinite_article_list'] = 'Ynfinite\YnfiniteArticleListModule';
+
 	$GLOBALS['TL_CTE']['ynfinite'] = array(
 	    'ynfinite_form' => 'Ynfinite\ContentForm',
 	    'ynfinite_filter_form' => 'Ynfinite\ContentFilterForm',
