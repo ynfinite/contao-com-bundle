@@ -136,9 +136,9 @@ class YnfiniteCommunicationService {
 		$result = json_decode($result);
 		return $result->hits;
 
-		$debug = $this->serverUrl."/v1/content_type/p/".$contentType."/content";
+		/*$debug = $this->serverUrl."/v1/content_type/p/".$contentType."/content";
 
-		return array("result" => $result, "debug" => $debug, "filter" => $filter, "contentType" => $contentType, "sessioninfo" => curl_getinfo($this->curlSession));
+		return array("result" => $result, "debug" => $debug, "filter" => $filter, "contentType" => $contentType, "sessioninfo" => curl_getinfo($this->curlSession));*/
 
 		
 	}

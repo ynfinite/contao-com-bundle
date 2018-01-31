@@ -5,7 +5,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
     'config' => array(
         'dataContainer'		=> 'Table',
         'switchToEdit'		=> true,
-        'ctable'            => array('tl_ynfinite_form_hooks'),
+        'ctable'            => array('tl_ynfinite_form_fields'),
         'enableVersioning' 	=> true,
         'sql'				=> array (
             'keys'			=> array(
@@ -35,12 +35,12 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
         'operations' => array(
             'edit'              => array(
                 'label'         => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['edit'],
-                'href'          => 'act=edit',
+                'href'          => 'table=tl_ynfinite_form_fields',
                 'icon'          => 'edit.svg'
             ),
-            'editHooks'             => array(
-                'label'         => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['editHooks'],
-                'href'          => 'table=tl_ynfinite_form_hooks',
+            'editHeader'             => array(
+                'label'         => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['editHeader'],
+                'href'          => 'act=edit',
                 'icon'          => 'header.svg'                
             ),
             'copy' => array
@@ -64,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
         )
     ),
     'palettes'	=> array(
-        'default'   => '{information_legend},title,leadType,formFields,introductionText,successText;{authorize_legend},authorizeForm,authorizationFields,sendAuthorizationTo;{send_legend},sendDataToYnfinite,sendDataViaEmail,targetEmail;'
+        'default'   => '{information_legend},title,leadType,formFields,groupStarter,groupEnder;{text_legend},introductionText,submitLabel,successText;{authorize_legend},authorizeForm,authorizationFields,sendAuthorizationTo;{send_legend},sendDataToYnfinite,sendDataViaEmail,targetEmail;'
     ),
     'fields' 	=> array(
         'id'					=> array(
@@ -114,6 +114,22 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
             'eval'              => array('multiple'=>true, 'helpwizard'=>true),
             'sql'               => "text NULL"
         ),
+        'groupStarter'             => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['groupStarter'],
+            'inputType'         => 'checkboxWizard',
+            'options'           => array(),
+            'exculde'           => true,
+            'eval'              => array('multiple'=>true, 'helpwizard'=>true),
+            'sql'               => "text NULL"
+        ),
+        'groupEnder'             => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['groupEnder'],
+            'inputType'         => 'checkboxWizard',
+            'options'           => array(),
+            'exculde'           => true,
+            'eval'              => array('multiple'=>true, 'helpwizard'=>true),
+            'sql'               => "text NULL"
+        ),
         'introductionText' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['introductionText'],
@@ -123,7 +139,21 @@ $GLOBALS['TL_DCA']['tl_ynfinite_form'] = array(
             'eval'                    => array('mandatory'=>false, 'rte'=>'tinyMCE', 'helpwizard'=>true),
             'explanation'             => 'insertTags',
             'sql'                     => "mediumtext NULL"
-        ),  
+        ), 
+        'submitLabel'                 => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['submitLabel'],
+            'inputType'         => 'text',
+            'exculde'           => true,
+            'sorting'           => true,
+            'flag'              => 1,
+            'search'            => true,
+            'eval'              => array(
+                'mandatory'     => true,
+                'maxLength'     => 255,
+                'tl_class'      => 'w100'
+            ),
+            'sql'               => "varchar(255) NOT NULL default ''"
+        ), 
         'successText' => array
         (
             'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_form']['successText'],
@@ -205,6 +235,8 @@ class tl_ynfinite_form extends Backend
         $fieldOptions = $loadDataService->getContentTypeFieldOptions($strValue);
 
         $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['formFields']['options'] = $fieldOptions;
+        $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['groupStarter']['options'] = $fieldOptions;
+        $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['groupEnder']['options'] = $fieldOptions;
         $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['authorizationFields']['options'] = $fieldOptions;
         $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['sendAuthorizationTo']['options'] = $fieldOptions;
 

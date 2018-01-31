@@ -1,101 +1,127 @@
-.lead-form-container {
-	padding: 0 1rem;
-	.form,
+.ce_ynfinite_form {
+	margin: 0 -1rem;
+	
+	.form.container,
 	.result {
 		opacity: 1;
 		transition: opacity .3s 0s ease;
 		height: auto;
-	}
 
-	.form {
-		margin: 0 -1rem;
-	}
-
-	.hidden {
-		height: 0;
-		overflow: hidden;
-		opacity: 0;
-	}
-
-	.form {
-		.row {
-			margin: 0 !important;
+		&.hidden {
+			height: 0;
+			overflow: hidden;
+			opacity: 0;
 		}
 
-		.widget {
-			margin: 1rem 0;
-			input, select {
-				padding: 0.5rem 1rem;
-				border: 1px solid lightgrey;
-			}
+	}
 
-			border-left: 2px solid $white;
-			padding: 0 1rem;
-			
-			&.hasError {
-				border-left: 2px solid orange;
-			}
+	form {
+		@include flex-between();
+		flex-wrap: wrap;
+		-webkit-flex-wrap: wrap;
+	}
 
-			&.text {
-			}
+	.widget {
+		flex-basis: 100%;
+		-webkit-flex-basis: 100%;
+		max-width: 100%;
+		margin-bottom: 1.5rem;
 
-			&.select {
-			}
+		label {
+			display: block;
+		}
 
-			&.checkbox,
-			&.radio {
-				.widget-inner-container {
+		input {
+			width: 100%;
+		}
+
+		input, select {
+			padding: 0.5rem 1rem;
+			border: 1px solid lightgrey;
+		}
+
+		border-left: 2px solid $white;
+		padding: 0 1rem;
+		
+		&.hasError {
+			border-left: 2px solid orange;
+		}
+
+		&.text {
+		}
+
+		&.select {
+		}
+
+		&.checkbox,
+		&.radio {
+			.widget-inner-container {
+				@include flex-start();
+				
+
+				.widget-option-container {
 					@include flex-start();
-					
+					align-items: center;
+					margin-right: 2rem;
 
-					.widget-option-container {
-						@include flex-start();
-						align-items: center;
-						margin-right: 2rem;
-
-						input {
-							margin-right: 0.5rem;
-						}
-					}
-				}
-			}
-
-			label {
-				display: block;
-			}
-
-			&.submit {
-				input {
-					width: auto;
-					padding: 1rem 1rem;
-					width: auto;
-
-					border: 1px solid $primaryColor;
-					border-radius: 0.5rem;
-
-					font-size: 1.6rem;
-
-					transition: all .3s 0s ease;
-					text-align: center;
-
-					background-color: $primaryColor;
-					color: $white;
-
-					outline: none;
-					&:hover {
-						background-color: $primaryColorHover;
+					input {
+						margin-right: 0.5rem;
 					}
 				}
 			}
 		}
+	}
 
-		.error {
-			font-size: 1.4rem;
-			margin-top: 0.25rem;
-			&::before {
-				@include fa-content("\f071", 1.6rem, 1rem);
-				color: orange;
+	.field-group {
+		flex-basis: 100%;
+		-webkit-flex-basis: 100%;
+		max-width: 100%;
+
+		@include flex-between();
+
+		> .widget {
+			flex: 1;
+		}
+	}
+
+			
+	.form-controls {
+		flex-basis: 100%;
+		-webkit-flex-basis: 100%;
+		max-width: 100%;
+		margin: 1.5rem 0;
+
+		padding: 0 1rem;
+
+		button[type="submit"] {
+			width: auto;
+			padding: 1rem 1rem;
+			width: auto;
+
+			border: 1px solid $primaryColor;
+
+			font-size: 1.6rem;
+
+			transition: all .3s 0s ease;
+			text-align: center;
+
+			background-color: $primaryColor;
+			color: $white;
+
+			outline: none;
+			&:hover {
+				opacity: 0.7;
 			}
+		}
+	}
+
+
+	.error {
+		font-size: 1.4rem;
+		margin-top: 0.25rem;
+		&::before {
+			@include fa-content("\f071", 1.6rem, 1rem);
+			color: orange;
 		}
 	}
 
@@ -112,3 +138,4 @@
 		padding: 0 1rem;
 	}
 }
+

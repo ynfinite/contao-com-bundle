@@ -1,15 +1,19 @@
 <?php
 
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['new'] = array("Neues Formular", "Neues Formular anlegen");
-$GLOBALS['TL_LANG']['tl_ynfinite_form']['edit'] = array("Fromular bearbeiten", "Fromular bearbeiten");
+$GLOBALS['TL_LANG']['tl_ynfinite_form']['edit'] = array("Fromularfelder bearbeiten", "Fromularfelder bearbeiten");
+$GLOBALS['TL_LANG']['tl_ynfinite_form']['editHeader'] = array("Fromular bearbeiten", "Fromular bearbeiten");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['delete'] = array("Fromular löschen", "Fromular löschen");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['show'] = array("Fromular anzeigen", "Fromular anzeigen");
 
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['title'] = array("Titel", "Geben Sie hier den Titel des Formulars an.");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['leadType'] = array("Lead Typ", "Wählen Sie hier einen der Lead Typen aus Ihrem Ynfinite aus.");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['formFields'] = array("Formular Felder", "Wählen Sie hier aus welche Felder aus dem Lead Typ angezeigt werden sollen. Alle Pflichtfelder aus Ynfinite werden automatisch angezeigt.");
+$GLOBALS['TL_LANG']['tl_ynfinite_form']['groupStarter'] = array("Startpunkte Gruppen", "Wählen Sie hier die Felder aus die Feldgruppen starten sollen. Die Felder sind in der Gruppe beinhaltet.");
+$GLOBALS['TL_LANG']['tl_ynfinite_form']['groupEnder'] = array("Endpunkte Gruppen", "Wählen Sier hier die Felder auf die Feldgruppen abschließen sollen. Die Felder sind in der Gruppe beinhaltet.");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['sendDataToYnfinite'] = array("Daten an Ynfinite senden", "Hier ankreuzen wenn die erfassten Daten aus dem Formular an Ihren Ynfinite Account gesendet werden sollen.");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['introductionText'] = array("Einleitungstext", "Dieser Text wird vor dem Formular als kurze Einleitung angezeigt. Erklären Sie hier ggf. die Funktion des Formulars.");
+$GLOBALS['TL_LANG']['tl_ynfinite_form']['submitLabel'] = array("Text für Absenden-Schaltfläche", "Geben Sie hier den Text für die Absenden-Schaltfläche ein.");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['successText'] = array("Erfolgsnachricht", "Dieser Text wird angezeigt nachdem das Formular erfolgreich abgesendet wurde.");
 
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['authorizeForm'] = array("Formular Bestätigen", "Hier ankreuzen wenn Sie möchten dass der Besucher der das Formular mittels eines Double-Opt-In das ausfüllen des Formulars bestätigen soll.");
@@ -19,5 +23,7 @@ $GLOBALS['TL_LANG']['tl_ynfinite_form']['sendAuthorizationTo'] = array("Empfäng
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['sendDataViaEmail'] = array("Daten per E-Mail senden", "Hier ankreuzen wenn Sie die Daten des Formulars auch per E-Mail versenden möchten.");
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['targetEmail'] = array("Ziel E-Mail Adresse", "Geben Sie hier die E-Mail Adresse ein an die das Formular versendet werden soll.");
 
+$GLOBALS['TL_LANG']['tl_ynfinite_form']['text_legend'] = "Texte";
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['send_legend'] = "Daten senden";
 $GLOBALS['TL_LANG']['tl_ynfinite_form']['authorize_legend'] = "Bestätigung";
+

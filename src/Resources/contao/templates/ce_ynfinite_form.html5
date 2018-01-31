@@ -1,14 +1,55 @@
-<script>
-</script>
-<div class="ce_ynfinite_form <?= $this->cssData[1]; ?>" <?php if($this->cssData[0]) : ?> id="<?= $this->cssData[0]; ?>" <?php endif; ?> >
-	<div 
-		data-ynfinite-type="leadForm"
-		data-ynfinite-component="<?= uniqid(); ?>"
-		data-target="ynfinite/com/lead/send"
-		data-token="<?= $this->requestToken; ?>"
-		data-leadtype="<?= $this->leadType; ?>"
-		data-fields="<?= $this->fields; ?>"
-		data-formid="<?= $this->formId; ?>"
-	>
+<div id="container_<?= $this->Template->uid; ?>" class="ce_ynfinite_form block">
+	<div class="form-container">
+		<div class="hidden send-error"></div>
+		<form id="form_<?= $this->Template->uid; ?>" data-sendAsync method="GET">
+			<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
+			<input type="hidden" name="formId" value="<?= $this->Template->formId; ?>" />
+			<?php foreach($this->Template->fields as $field) : 
+				echo $field."\n";
+			endforeach; ?>
+			<div class="form-controls">
+				<button type="submit"><?= $this->Template->submitLabel; ?></button>
+			</div>
+		</form>
+
 	</div>
+	<div class="hidden result-container"><div class="result-container-inner"></div></div>	
 </div>
+
+<script>
+	$("#form_<?= $this->Template->uid; ?>").validate({
+		rules: {
+			<?php foreach($this->Template->validate as $key => $validationRule) : 
+				echo "'".$key."': ".$validationRule.", \n";
+			endforeach; ?>
+		},
+		messages: {
+			<?php foreach($this->Template->messages as $key => $message) : 
+				echo "'".$key."': ".$message.", \n";
+			endforeach; ?>
+		}
+	});
+
+	$("#form_<?= $this->Template->uid; ?>").on("submit", function(e) {
+		e.preventDefault();
+		if($(this).valid()) {
+			var data = $(this).serialize();
+			$.post("ynfinite/com/lead/send", data, function(data) {
+				if(data.mailSuccess) {
+					console.log("Success")
+					$("#container_<?= $this->Template->uid; ?>").find(".send-error").addClass("hidden");
+					$("#container_<?= $this->Template->uid; ?>").find(".form-container").addClass("hidden");
+					$result = $("#container_<?= $this->Template->uid; ?>").find(".result-container");
+					console.log($result);
+					$result.html(data.message);
+					$result.removeClass("hidden");
+				}
+				else {
+					$senderror = $("#container_<?= $this->Template->uid; ?>").find(".send-error");
+					$senderror.html("<p>Beim versenden ist ein Fehler entstanden. Versuchen Sie es in ein paar Minuten noch einmal.</p>");
+					$senderror.removeClass("hidden");
+				}
+			});
+		}
+	})
+</script>

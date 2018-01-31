@@ -54,7 +54,7 @@
 ?>
 
 <div class="ce_ynfinite_filter_form block">
-	<form method="GET">
+	<form method="GET" <?php if($this->jumpTo): ?> action="<?= $this->jumpTo; ?>" <?php endif; ?>>
 		<?php foreach($this->Template->fields as $field) : 
 			switch($field->type) :
 				case "text":

@@ -2,7 +2,7 @@
 	$GLOBALS['BE_MOD']['ynfinite'] = array();
 
 	$GLOBALS['BE_MOD']['ynfinite']['ynfinite_forms'] = array(
-	    'tables' => array('tl_ynfinite_form', 'tl_ynfinite_form_hooks'),
+	    'tables' => array('tl_ynfinite_form', 'tl_ynfinite_form_fields'),
 	    'icon'   => __DIR__.'../../public/assets/icon.png'
 	);
 
@@ -39,12 +39,11 @@
 
 	$GLOBALS['TL_HOOKS']['compileArticle'][] = array('Ynfinite\CheckArticle', 'checkVisibility');
 
-	/* YNFINITE DATA */
+	/* JAVASCRIPT */
+	$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/ynfinitecontaocom/assets/js/jquery.validate.min.js|static'; 
+	$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/ynfinitecontaocom/assets/js/ynfinite.js|static'; 
 
-	$GLOBALS['TL_YNFINITE_HOOKS'] = array( // Not Used Yet
-		"yh_frontend_befor_send_data",
-		"yh_frontend_after_send_data"
-	);
+	/* YNFINITE DATA */
 
 	$GLOBALS['TL_YNFINITE_FILTER_OPERATIONS'] = array(
 		"b" => "beinhaltet" , 

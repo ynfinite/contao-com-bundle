@@ -41,6 +41,13 @@ class ContentFilterForm extends \ContentElement {
     		$outputFields[$element->contentTypeField] = $element;
         }
 
+        if($filter->jumpTo) {
+            $objPage = \Contao\PageModel::findWithDetails($filter->jumpTo);
+            if($objPage) {
+                $this->Template->jumpTo = $objPage->getFrontendUrl();
+            }
+        }
+
         $this->Template->requestToken = $requestToken;
         $this->Template->filterId = $filterId;
         $this->Template->alias = $filter->alias;

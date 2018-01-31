@@ -1,3 +1,13 @@
+<?php
+	if($this->prevUrl) {
+		$GLOBALS['TL_HEAD'][] = "<link rel='prev' href='".$this->prevUrl."'>";
+	}
+	
+	if($this->nextUrl) {
+		$GLOBALS['TL_HEAD'][] = "<link rel='next' href='".$this->nextUrl."'>";
+	}
+?>
+
 <div class="ce_ynfinite_content_list">
 	<div class="contentContainer">
 		<?php foreach($this->data as $singleData): ?>

@@ -10,7 +10,7 @@ class Configuration implements ConfigurationInterface {
 	public function getConfigTreeBuilder() {
 		$treeBuilder = new TreeBuilder();
 		$rootNode = $treeBuilder->root('ynfinite-com-bundle');
-
+		
 		return $treeBuilder;
 	}
 }

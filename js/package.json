@@ -37,6 +37,7 @@
     "axios": "0.16.2",
     "babel-polyfill": "6.23.0",
     "immutable": "3.8.1",
+    "jquery-form-validator": "^2.3.77",
     "lodash": "4.17.4",
     "nodelist-foreach-polyfill": "^1.2.0",
     "react": "15.5.4",

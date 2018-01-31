@@ -3,3 +3,10 @@ services:
     class: 'Ynfinite\ContaoComBundle\EventListener\YnfiniteCommunicationService'
     arguments:
       - "@contao.framework"
+
+  ynfinite.contao-com.email:
+    class: 'Ynfinite\ContaoComBundle\EventListener\YnfiniteEmailService'
+    arguments: 
+      - "@contao.framework"
+      - "@mailer"
+      - "@templating"

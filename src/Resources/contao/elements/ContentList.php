@@ -111,33 +111,32 @@ class ContentList extends \ContentElement {
                         $singleContent->jumpTo = $objPage->getFrontendUrl("/".$alias);
                         $finalContent[] = $singleContent;
                     }
+                    $content->hits = $finalContent;
                 }
-
-                $this->Template->data = $finalContent;
-            }
-            else {
-                $this->Template->data = $content;
             }
         }
-        else {
-            $this->Template->data = $content;
-        }
+        
+        $this->Template->data = $content;
 
         $pagination = array("page" => $page, "total" => $content->total, "maxPages" => (int)($content->total / $this->ynfinite_perPage));
         $this->Template->pagination = $pagination;
-
-        $this->Template->selfUrl = $this->generateSelfUrl();
-
+        
+        $urls = $this->generateUrls($pagination);
+        $this->Template->selfUrl = $urls['self'];
+        $this->Template->prevUrl = $urls['prev'];
+        $this->Template->nextUrl = $urls['next'];
     }
 
-    private function generateSelfUrl() {
+    private function generateUrls($pagination) {
+        $returnUrls = array();
+
         $urlInfo = explode("?", $_SERVER['REQUEST_URI']);
 
         $urlData = array();
         $concat = "?";
 
         if(count($urlInfo) > 1) {
-            // At this point we are not sure if the page parameter is the last or not
+            // At this point we are not sure if the page parameter is the last or not so we check for &page= and then page=
             $pagePos = strpos($urlInfo[1], "&page=");
             if($pagePos === false) $pagePos = strpos($urlInfo[1], "page=");
 
@@ -158,12 +157,27 @@ class ContentList extends \ContentElement {
         $url = $urlData['url'];
         if($urlData['params']){
             $url .= "?".$urlData['params'].$concat;
+            $returnUrls['self'] = $url;
+            if($pagination['page'] > 1 ) {
+                $returnUrls['prev'] = $url."page=".($pagination['page']-1);
+            }
+            if($pagination['page'] < $pagination['maxPages']) {
+                $returnUrls['next'] = $url."page=".($pagination['page']+1);
+            }
+            
         } 
         else {
             $url .= $concat;
+            $returnUrls['self'] = $url;
+            if($pagination['page'] > 1 ) {
+                $returnUrls['prev'] = $url."page=".($pagination['page']-1);
+            }
+            if($pagination['page'] < $pagination['maxPages']) {
+                $returnUrls['next'] = $url."page=".($pagination['page']+1);
+            }
         }
 
-        return $url;
+        return $returnUrls;
     }
 
     private function buildFilterArrayFromFilterFields($filterFields) {

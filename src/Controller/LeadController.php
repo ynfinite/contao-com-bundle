@@ -49,19 +49,19 @@ class LeadController extends Controller{
 		// Intitalize contao framework. Needed to use Contao3 content e.g. Models
 		$contaoFramework = $this->get('contao.framework');
 		$contaoFramework->initialize();
-		$this->config = $contaoFramework->getAdapter(Config::class);
+		$this->config = $contaoFramework->getAdapter(\Config::class);
 
 		// Get data from request
-		$requestContent = json_decode($request->getContent());
+		$requestContent = (object) $request->request->all();
 		$parentFieldsArray = array();
 		$contentFields = array();
-
 		// Load the ynfinite from
 		$form = YnfiniteFormModel::findById($requestContent->formId);
+		$formData = $requestContent->data;
 		$realFieldNames = $requestContent->realFieldNames;
 
 		// Build formarray
-		foreach($requestContent->data as $key => $field) {
+		foreach($formData as $key => $field) {
 			$parentIndex = strpos($key, "__parent__");
 			if( $parentIndex === 0) {
 				$key = substr($key, $parentIndex+strlen("__parent__"));
@@ -75,22 +75,14 @@ class LeadController extends Controller{
 		$mailSuccess = false;
 
 		if($form->sendDataViaEmail && $form->targetEmail) {
+			$emailService = $this->get("ynfinite.contao-com.email");
+
 			$formData = array_merge($contentFields, $parentFieldsArray);
-
-			$fromEmail = $this->config->get("adminEmail");
-			if(!$fromEmail) $fromEmail = "noreply@".$_SERVER['HTTP_HOST'];
-
-			$mailer = $this->get("mailer");
-			$message = new \Swift_Message($form->title);
-			$message->setFrom($fromEmail)
-				->setTo($form->targetEmail)
-				->setBody($this->renderView('@YnfiniteContaoCom/Emails/sendform.html.twig', array(
-					"realFieldNames" => $realFieldNames,
-					"formData" => $formData,
-					"title" => $form->title
-				)), 'text/html');
-			$mailer->send($message);
-			$mailSuccess = true;
+			$mailSuccess = $emailService->sendEMail($formData, $form, array(
+				"realFieldNames" => $realFieldNames,
+				"formData" => $formData,
+				"title" => $form->title
+			));
 		}
 
 
