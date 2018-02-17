@@ -32,14 +32,18 @@ class YnfiniteEmailService {
 			$templateData = $this->pre_send_change_data($templateData);
 			$targetMail = $this->pre_send_change_target($targetMail, $templateData);
 
-			$message = new \Swift_Message($title);
-			$message->setFrom($fromEmail)
-				->setTo($targetMail)
-				->setBody($this->templating->render($templateName, $templateData), 'text/html');
+			if($targetMail) {
+				$message = new \Swift_Message($title);
+				$message->setFrom($fromEmail)
+					->setTo($targetMail)
+					->setBody($this->templating->render($templateName, $templateData), 'text/html');
 
-			$this->mailer->send($message);
-
-			return true;
+				$this->mailer->send($message);
+				return true;
+			}
+			else {
+				return false;
+			}			
 	}
 
 	public function pre_send_change_data($templateData) {

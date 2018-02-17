@@ -17,6 +17,7 @@ class LeadController extends Controller{
 
 	public function indexAction(Request $request){
 
+		/*
 		$requestContent = json_decode($request->getContent());
 
 		
@@ -41,7 +42,7 @@ class LeadController extends Controller{
 		);
 
 		$data[] = $loadDataService->debugIt($testArray, $testParent, "5a1c540e2f61c5001095077a");
-
+		*/
 		return new JsonResponse($data);
 	}
 
@@ -79,7 +80,7 @@ class LeadController extends Controller{
 			$emailService = $this->get("ynfinite.contao-com.email");
 
 			$formData = array_merge($contentFields, $parentFieldsArray);
-			$mailSuccess = $emailService->sendEMail($form->targetMail, $form->title, '@YnfiniteContaoCom/Emails/sendform.html.twig', array(
+			$mailSuccess = $emailService->sendEMail($form->targetEmail, $form->title, '@YnfiniteContaoCom/Emails/sendform.html.twig', array(
 				"realFieldNames" => $realFieldNames,
 				"data" => $formData,
 				"title" => $form->title

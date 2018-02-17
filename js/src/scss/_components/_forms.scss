@@ -1,8 +1,8 @@
 .ce_ynfinite_form {
 	margin: 0 -1rem;
 	
-	.form.container,
-	.result {
+	.form-container,
+	.result-container {
 		opacity: 1;
 		transition: opacity .3s 0s ease;
 		height: auto;
@@ -170,7 +170,7 @@
 		}
 	}
 
-	.form-explanation {
+	.form-explanation, .form-controls, .result-container {
 		flex-basis: 100%;
 		-webkit-flex-basis: 100%;
 		max-width: 100%;
@@ -180,13 +180,6 @@
 	}
 			
 	.form-controls {
-		flex-basis: 100%;
-		-webkit-flex-basis: 100%;
-		max-width: 100%;
-		margin: 1.5rem 0;
-
-		padding: 0 1rem;
-
 		button[type="submit"] {
 			width: auto;
 			padding: 1rem 1rem;
@@ -224,10 +217,6 @@
 			@include fa-content("\f071", 1.6rem, 1rem);
 			color: orange;
 		}
-	}
-
-	.result {
-		padding: 0 1rem;
 	}
 }
 
