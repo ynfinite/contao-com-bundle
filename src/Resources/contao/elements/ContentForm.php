@@ -41,6 +41,11 @@ class ContentForm extends \ContentElement {
         
         $formElements = $loadDataService->getContentTypeFields($form->leadType);
 
+        uksort($formElements, function($key1, $key2) use ($fields, $formElements) {
+            $return = (array_search($formElements[$key1]->config->field_name, $fields) > array_search($formElements[$key2]->config->field_name, $fields) ? 1 : -1);
+            return $return;
+        });
+
         $realFieldNames = array();
         $outputFields = array();
         $validate = array();
@@ -55,12 +60,14 @@ class ContentForm extends \ContentElement {
             if($key) {
                 $markup = "";
                 switch($element->type) {
+                    case "select":
+                        $markup = $this->renderSelectField($element, $starter, $ender);
+                        break;
+
                     case "number":
+                    case "text":
                         $markup = $this->renderTextField($element, $starter, $ender);
                         break;
-                    default:
-                        $markup = $this->renderTextField($element, $starter, $ender);
-                    break;
                 }
                 $validationData = $this->getValidationData($element);
 
@@ -104,10 +111,17 @@ class ContentForm extends \ContentElement {
         }
 
         $return .= '<div class="widget text" data-fieldname="'.$field->config->name.'">
-            <label for="'.$field->config->field_name.'">'.$label.'</label>
-            <input type="hidden" name="realFieldNames['.str_replace("__parent__", "", $field->config->field_name).']" value="'.$field->config->name.'" />
-            <input type="text" name="data['.$field->config->field_name.']" />
-        </div>';
+            <label for="'.$field->config->field_name.'">'.$label.'</label>';
+        $return .= '<input type="hidden" name="realFieldNames['.str_replace("__parent__", "", $field->config->field_name).']" value="'.$field->config->name.'" />';
+
+        if($field->config->multiline) {
+            $return .= '<textarea name="data['.$field->config->field_name.']"></textarea>';
+        }
+        else {
+            $return .= '<input type="text" name="data['.$field->config->field_name.']" />';
+        }
+        
+        $return .= '</div>';
 
         if($ender) {
             $return .= "</div>";
@@ -116,28 +130,70 @@ class ContentForm extends \ContentElement {
     }
 
     function renderSelectField($field, $filterData, $formUuid) {
+        $markup = "";
+
+        // Build label
         $label = $field->label;
-        if(!$label) $label = ucfirst($field->contentTypeField);
-        
-        $options = "";
-        $field->options = unserialize($field->options);
-        foreach($field->options as $option) {
-            if($filterData[$field->contentTypeField] == $option) {
-                $options .= "<option selected value='".$option."'>".$option."</option>";    
-            }
-            else {
-                $options .= "<option value='".$option."'>".$option."</option>";
-            }
-            
+        if(!$label) $label = ucfirst($field->config->name);
+        if($field->config->required === true) {
+            $label .="<span class'required'>*</span>";
         }
 
-        return '<div class="widget select" data-fieldname="'.$field->contentTypeField.'">
-            <label for="data['.$field->config->field_name.']">'.$label.'</label>
-            <select name="data['.$field->config->field_name.']">
-                <option value="">-</option>
-                '.$options.'
-            </select>
+        // Check if its a group starter
+        $return = "";
+        if($starter) {
+            $return .= "<div class='field-group'>";
+        }
+
+
+        // Build field markup
+        $items = $field->config->items;
+        switch($field->config->selectType) {
+            case "checkbox":
+                $markup = '<label for="'.$field->config->field_name.'">'.$label.'</label>';
+                foreach($items as $item) {
+                    $markup .= '<div class="widget-inner-container">
+                        <div class="widget-option-container">
+                            <input type="checkbox" name="data['.$field->config->field_name.']" value="'.$item->name.'" />
+                        </div>
+                        <label>'.$item->name.'</label>
+                    </div>';
+                }
+            break;
+            case "radio":
+                foreach($items as $item) {
+                    $markup .= '<div class="widget-inner-container">
+                        <div class="widget-option-container">
+                            <input type="radio" name="data['.$field->config->field_name.']" value="'.$item->name.'" />
+                        </div>
+                        <label>'.$item->name.'</label>
+                    </div>';
+                }
+            break;
+            case "select":
+                $markup = '<label for="'.$field->config->field_name.'">'.$label.'</label>
+                    <select name="data['.$field->config->field_name.']">
+                    <option value="">-</option>';
+                
+                foreach($field->options as $option) {
+                    $markup .= "<option selected value='".$item->name."'>".$item->name."</option>";    
+                }
+
+                $markup .= "</select>";
+            break;
+        }
+
+        $return .= '<div class="widget '.$field->config->selectType.'" data-fieldname="'.$field->config->name.'">
+            <input type="hidden" name="realFieldNames['.str_replace("__parent__", "", $field->config->field_name).']" value="'.$field->config->name.'" />
+            '.$markup.'
         </div>';
+
+        // Check if its end of group
+        if($ender) {
+            $return .= "</div>";
+        }
+        
+        return $return;
     }
 
     function renderHiddenField($field, $filterData, $formUuid) {        

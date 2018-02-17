@@ -42,6 +42,7 @@
 	/* JAVASCRIPT */
 	$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/ynfinitecontaocom/assets/js/jquery.validate.min.js|static'; 
 	$GLOBALS['TL_JAVASCRIPT'][] = 'bundles/ynfinitecontaocom/assets/js/ynfinite.js|static'; 
+	$GLOBALS['TL_CSS'][] = 'bundles/ynfinitecontaocom/assets/css/ynfinite.css'; 
 
 	/* YNFINITE DATA */
 

@@ -6,7 +6,7 @@ services:
 
   ynfinite.contao-com.email:
     class: 'Ynfinite\ContaoComBundle\EventListener\YnfiniteEmailService'
-    arguments: 
+    arguments:
       - "@contao.framework"
       - "@mailer"
       - "@templating"

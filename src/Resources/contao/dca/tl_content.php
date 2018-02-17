@@ -1,7 +1,7 @@
 <?php
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_form'] = '{type_legend},type,headline,ynfinite_form_id,cssID';
-$GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_filter_form'] = '{type_legend},type,headline,ynfinite_filter_form_id,cssID';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_filter_form'] = '{type_legend},type,headline,ynfinite_filter_form_id,ynfinite_new_window,ynfinite_template,cssID';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_content_list'] = '{type_legend},type,headline,ynfinite_filter_id,ynfinite_filter_form_id,ynfinite_perPage,ynfinite_jumpTo,ynfinite_template,cssID';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_content_single'] = '{type_legend},type,headline,ynfinite_contentType,ynfinite_content_id,ynfinite_template;{title_legend},ynfinite_set_page_title';
 
@@ -42,6 +42,13 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['ynfinite_filter_form_id'] = array (
         'tl_class'=>'clr'
     ),
     'sql' => "blob NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['ynfinite_new_window'] = array (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_content']['ynfinite_new_window'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'sql'                     => "char(1) NOT NULL default ''"
 );
 
 /** FIELDS FOR CONTENT LIST **/

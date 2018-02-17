@@ -25,44 +25,28 @@ class YnfiniteEmailService {
 		$this->config = $framework->getAdapter(Config::class);
 	}	
 
-	public function sendEMail($formData, $form, $templateData) {
+	public function sendEMail($targetMail, $title, $templateName, $templateData) {
 			$fromEmail = $this->config->get("adminEmail");
 			if(!$fromEmail) $fromEmail = "noreply@".$_SERVER['HTTP_HOST'];
-
-			$title = $form->title;
-			$targetMail = $form->targetEmail;
 			
-			$emailData = $this->pre_send_change_data($formData);
-			$emailData = $this->pre_send_change_target($targetMail, $formData);
-
-			$template = $this->getTemplate('contact-mail');
+			$templateData = $this->pre_send_change_data($templateData);
+			$targetMail = $this->pre_send_change_target($targetMail, $templateData);
 
 			$message = new \Swift_Message($title);
 			$message->setFrom($fromEmail)
 				->setTo($targetMail)
-				->setBody($this->templating->render($template, $templateData), 'text/html');
+				->setBody($this->templating->render($templateName, $templateData), 'text/html');
 
 			$this->mailer->send($message);
 
 			return true;
 	}
 
-	public function pre_send_change_data($emailData) {
-		return $emailData;
+	public function pre_send_change_data($templateData) {
+		return $templateData;
 	}
 
-	public function pre_send_change_target($target, $formData) {
+	public function pre_send_change_target($target, $templateData) {
 		return $target;
-	}
-
-	public function getTemplate($name) {
-		switch($name) {
-			case "contact-mail":
-				return '@YnfiniteContaoCom/Emails/sendform.html.twig';
-				break;
-			default: 
-				return '@YnfiniteContaoCom/Emails/sendform.html.twig';
-				break;
-		}
 	}
 }

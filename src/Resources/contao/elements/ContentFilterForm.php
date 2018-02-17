@@ -48,6 +48,11 @@ class ContentFilterForm extends \ContentElement {
             }
         }
 
+        if($this->ynfinite_new_window) {
+            $this->Template->formTarget = "target='_blank'";
+        }
+
+        $this->Template->cssData = $this->cssID;
         $this->Template->requestToken = $requestToken;
         $this->Template->filterId = $filterId;
         $this->Template->alias = $filter->alias;

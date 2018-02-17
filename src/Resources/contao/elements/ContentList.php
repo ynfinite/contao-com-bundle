@@ -198,7 +198,7 @@ class ContentList extends \ContentElement {
                 "value" => $value
             );
 
-            if($filterField->value2) {
+            if($filterField->operation == "z") {
                 $arrFilter[$filterField->type_field]["value2"] = $filterField->value2;
             }
         }

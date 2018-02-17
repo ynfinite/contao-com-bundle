@@ -53,8 +53,8 @@
 	}
 ?>
 
-<div class="ce_ynfinite_filter_form block">
-	<form method="GET" <?php if($this->jumpTo): ?> action="<?= $this->jumpTo; ?>" <?php endif; ?>>
+<div <?php if($this->cssData[0]): ?> id="<?= $this->cssData[0]; ?>" <?php endif; ?> class="ce_ynfinite_filter_form block<?php if($this->cssData[1]): ?> <?= " ".$this->cssData[1]; ?><?php endif; ?>">
+	<form method="GET" <?= $this->formTarget; ?> <?php if($this->jumpTo): ?> action="<?= $this->jumpTo; ?>" <?php endif; ?>>
 		<?php foreach($this->Template->fields as $field) : 
 			switch($field->type) :
 				case "text":

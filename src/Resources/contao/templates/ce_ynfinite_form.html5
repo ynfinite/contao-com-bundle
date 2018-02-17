@@ -27,7 +27,12 @@
 			<?php foreach($this->Template->messages as $key => $message) : 
 				echo "'".$key."': ".$message.", \n";
 			endforeach; ?>
-		}
+		},
+		errorPlacement: function(error, element) {
+    		console.log(error, element);
+    		console.log(element.closest(".widget"));
+    		error.appendTo( element.closest(".widget") );
+  		}
 	});
 
 	$("#form_<?= $this->Template->uid; ?>").on("submit", function(e) {
@@ -36,11 +41,9 @@
 			var data = $(this).serialize();
 			$.post("ynfinite/com/lead/send", data, function(data) {
 				if(data.mailSuccess) {
-					console.log("Success")
 					$("#container_<?= $this->Template->uid; ?>").find(".send-error").addClass("hidden");
 					$("#container_<?= $this->Template->uid; ?>").find(".form-container").addClass("hidden");
 					$result = $("#container_<?= $this->Template->uid; ?>").find(".result-container");
-					console.log($result);
 					$result.html(data.message);
 					$result.removeClass("hidden");
 				}

@@ -48,27 +48,113 @@
 		}
 
 		&.text {
+			textarea {
+				width: 100%;
+				min-height: 10rem;
+			}
 		}
 
 		&.select {
 		}
 
-		&.checkbox,
-		&.radio {
+		&.checkbox {
+			position: relative;
+			> label {
+				margin-bottom: 1.5rem;
+			}
+
+
 			.widget-inner-container {
 				@include flex-start();
-				
+				margin-bottom: 1.5rem;
 
 				.widget-option-container {
-					@include flex-start();
-					align-items: center;
 					margin-right: 2rem;
 
+					@include flex-center-content();
+					
 					input {
+						position: relative;
+						appearance: none;
+						-webkit-appearance: none;
+						-moz-appearance: none;
+						
+						width: 2rem;
+						height: 2rem;
+						border: 1px solid $black;
 						margin-right: 0.5rem;
+						
+						&:active, &:checked:active {
+							box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+							outline: 0;
+						}
+
+						&:checked {
+							&::after {
+								content: "";
+								width: 0.5rem;
+								height: 1rem;
+								position: absolute;
+								top: 50%;
+								left: 50%;
+								transform: translate(-50%, -50%) rotate(45deg);
+								border-bottom: 2px solid $black;
+								border-right: 2px solid black;
+							}
+						}
+
+						&.error {
+							&::before {
+								display: none;
+								content: "";
+							}
+						}
+					}
+
+					label.error {
+						position: absolute;
+						left: 1rem;
+						bottom: -1rem;
 					}
 				}
 			}
+		}
+
+		&.radio {
+			> label {
+				margin-bottom: 3rem;
+			}
+
+
+			.widget-inner-container {
+				@include flex-start();
+				margin-bottom: 1.5rem;
+				
+
+				.widget-option-container {
+					margin-right: 2rem;
+
+					@include flex-center-content();
+					
+					input {
+						
+						appearance: none;
+						-webkit-appearance: none;
+						-moz-appearance: none;
+						
+						width: 2rem;
+						height: 2rem;
+						border: 1px solid $black;
+						margin-right: 0.5rem;
+						
+						&:active, &:checked:active {
+						}
+
+						&:checked {
+						}
+					}
+				}
+			}			
 		}
 	}
 
@@ -84,6 +170,14 @@
 		}
 	}
 
+	.form-explanation {
+		flex-basis: 100%;
+		-webkit-flex-basis: 100%;
+		max-width: 100%;
+		margin: 1.5rem 0;
+
+		padding: 0 1rem;
+	}
 			
 	.form-controls {
 		flex-basis: 100%;
@@ -99,8 +193,6 @@
 			width: auto;
 
 			border: 1px solid $primaryColor;
-
-			font-size: 1.6rem;
 
 			transition: all .3s 0s ease;
 			text-align: center;

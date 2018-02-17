@@ -55,6 +55,7 @@ class LeadController extends Controller{
 		$requestContent = (object) $request->request->all();
 		$parentFieldsArray = array();
 		$contentFields = array();
+
 		// Load the ynfinite from
 		$form = YnfiniteFormModel::findById($requestContent->formId);
 		$formData = $requestContent->data;
@@ -78,9 +79,9 @@ class LeadController extends Controller{
 			$emailService = $this->get("ynfinite.contao-com.email");
 
 			$formData = array_merge($contentFields, $parentFieldsArray);
-			$mailSuccess = $emailService->sendEMail($formData, $form, array(
+			$mailSuccess = $emailService->sendEMail($form->targetMail, $form->title, '@YnfiniteContaoCom/Emails/sendform.html.twig', array(
 				"realFieldNames" => $realFieldNames,
-				"formData" => $formData,
+				"data" => $formData,
 				"title" => $form->title
 			));
 		}
