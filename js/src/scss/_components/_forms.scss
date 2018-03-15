@@ -197,6 +197,14 @@
 			&:hover {
 				opacity: 0.7;
 			}
+
+			&.sending {
+				background-color: $lightGrey;
+				pointer-events: none;
+				border: 1px solid $lightGrey;
+
+				color: $textColor;
+			}
 		}
 	}
 

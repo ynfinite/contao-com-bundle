@@ -29,8 +29,6 @@
 			endforeach; ?>
 		},
 		errorPlacement: function(error, element) {
-    		console.log(error, element);
-    		console.log(element.closest(".widget"));
     		error.appendTo( element.closest(".widget") );
   		}
 	});
@@ -39,6 +37,12 @@
 		e.preventDefault();
 		if($(this).valid()) {
 			var data = $(this).serialize();
+			// Disable submit button
+			var submitButton = $(this).find(".form-controls button[type=submit]");
+			submitButton.attr("disabled", true);
+			submitButton.addClass("sending");
+
+			// Send mail
 			$.post("ynfinite/com/lead/send", data, function(data) {
 				if(data.mailSuccess) {
 					$("#container_<?= $this->Template->uid; ?>").find(".send-error").addClass("hidden");
@@ -52,6 +56,8 @@
 					$senderror.html("<p>Beim versenden ist ein Fehler entstanden. Versuchen Sie es in ein paar Minuten noch einmal.</p>");
 					$senderror.removeClass("hidden");
 				}
+				submitButton.removeClass("sending");
+				submitButton.attr("disabled", false);
 			});
 		}
 	})
