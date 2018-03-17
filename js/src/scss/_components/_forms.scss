@@ -57,12 +57,12 @@
 		&.select {
 		}
 
-		&.checkbox {
+		&.checkbox,
+		&.radio {
 			position: relative;
 			> label {
 				margin-bottom: 1.5rem;
 			}
-
 
 			.widget-inner-container {
 				@include flex-start();
@@ -74,6 +74,7 @@
 					@include flex-center-content();
 					
 					input {
+						outline: 0;
 						position: relative;
 						appearance: none;
 						-webkit-appearance: none;
@@ -81,7 +82,7 @@
 						
 						width: 2rem;
 						height: 2rem;
-						border: 1px solid $black;
+						border: 1px solid lightgrey;
 						margin-right: 0.5rem;
 						
 						&:active, &:checked:active {
@@ -121,40 +122,13 @@
 		}
 
 		&.radio {
-			> label {
-				margin-bottom: 3rem;
-			}
-
-
 			.widget-inner-container {
-				@include flex-start();
-				margin-bottom: 1.5rem;
-				
-
 				.widget-option-container {
-					margin-right: 2rem;
-
-					@include flex-center-content();
-					
 					input {
-						
-						appearance: none;
-						-webkit-appearance: none;
-						-moz-appearance: none;
-						
-						width: 2rem;
-						height: 2rem;
-						border: 1px solid $black;
-						margin-right: 0.5rem;
-						
-						&:active, &:checked:active {
-						}
-
-						&:checked {
-						}
+						border-radius: 50%;
 					}
 				}
-			}			
+			}
 		}
 	}
 

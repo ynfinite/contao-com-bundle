@@ -52,6 +52,7 @@ class ContentFilterForm extends \ContentElement {
             $this->Template->formTarget = "target='_blank'";
         }
 
+        $this->Template->submitLabel = $filter->submitLabel;
         $this->Template->cssData = $this->cssID;
         $this->Template->requestToken = $requestToken;
         $this->Template->filterId = $filterId;

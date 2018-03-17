@@ -1,5 +1,5 @@
-<div id="container_<?= $this->Template->uid; ?>" class="ce_ynfinite_form block">
-	<div class="form-container">
+<div id="container_<?= $this->Template->uid; ?>" class="ce_ynfinite_form block <?= $this->cssData[1]; ?>">
+	<div <?php if($this->cssData[0]) : ?> id="<?= $this->cssData[0]; ?>" <?php endif;?> class="form-container">
 		<div class="hidden send-error"></div>
 		<form id="form_<?= $this->Template->uid; ?>" data-sendAsync method="GET">
 			<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />

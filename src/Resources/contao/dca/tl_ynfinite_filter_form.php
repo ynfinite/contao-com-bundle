@@ -105,7 +105,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter_form'] = array
 	'palettes' => array
 	(
 		'__selector__'                => array('sendViaEmail'),
-		'default'                     => '{title_legend},title,alias,jumpTo;{content_legend},contentType;{template_legend:hide},customTpl;{expert_legend:hide},method,novalidate,attributes,formID'
+		'default'                     => '{title_legend},title,alias,jumpTo;{content_legend},contentType;{text_legend},submitLabel;{template_legend:hide},customTpl;{expert_legend:hide},method,novalidate,attributes,formID'
 	),
 
 	// Subpalettes
@@ -156,6 +156,20 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter_form'] = array
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'hasOne', 'load'=>'eager')
 		),
+		'submitLabel'                 => array(
+            'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_filter_form']['submitLabel'],
+            'inputType'         => 'text',
+            'exculde'           => true,
+            'sorting'           => true,
+            'flag'              => 1,
+            'search'            => true,
+            'eval'              => array(
+                'mandatory'     => true,
+                'maxLength'     => 255,
+                'tl_class'      => 'w100'
+            ),
+            'sql'               => "varchar(255) NOT NULL default ''"
+        ), 
 		'contentType'             => array(
             'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_filter_form']['contentType'],
             'inputType'         => 'select',

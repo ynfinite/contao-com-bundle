@@ -72,7 +72,7 @@
 			endswitch;
 		endforeach; ?>
 		<div class="form-controls">
-			<button type="submit">Filtern</button>
+			<button type="submit"><?php if($this->submitLabel) echo $this->submitLabel; else echo "Filtern"; ?></button>
 			<button type="reset">Zurücksetzen</button>
 		</div>
 	</form>	

@@ -161,6 +161,7 @@ class ContentForm extends \ContentElement {
                 }
             break;
             case "radio":
+                $markup = '<label for="'.$field->config->field_name.'">'.$label.'</label>';
                 foreach($items as $item) {
                     $markup .= '<div class="widget-inner-container">
                         <div class="widget-option-container">
@@ -173,10 +174,10 @@ class ContentForm extends \ContentElement {
             case "select":
                 $markup = '<label for="'.$field->config->field_name.'">'.$label.'</label>
                     <select name="data['.$field->config->field_name.']">
-                    <option value="">-</option>';
+                    <option value="" selected="selected">-</option>';
                 
-                foreach($field->options as $option) {
-                    $markup .= "<option selected value='".$item->name."'>".$item->name."</option>";    
+                foreach($items as $item) {
+                    $markup .= "<option value='".$item->name."'>".$item->name."</option>";    
                 }
 
                 $markup .= "</select>";
