@@ -10,3 +10,8 @@ services:
       - "@contao.framework"
       - "@mailer"
       - "@templating"
+
+  ynfinite.contao-com.formgenerator:
+    class: 'Ynfinite\ContaoComBundle\EventListener\YnfiniteFormGeneratorService'
+    arguments:
+      - "@contao.framework"

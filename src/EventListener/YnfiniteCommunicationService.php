@@ -15,7 +15,7 @@ class YnfiniteCommunicationService {
 	private $framework;
 	private $config;
 
-	private $serverUrl = "http://server.ynfinite.de";
+	private $serverUrl = "http://staging-server.ynfinite.de";
 
 	public function __construct(ContaoFrameworkInterface $framework) {
 		$this->framework = $framework;
@@ -80,31 +80,77 @@ class YnfiniteCommunicationService {
 		return $this->buildTypeOptions($result);
 	}
 
-	public function getContentTypeFieldOptions($contentTypeId) {
-		$formElements = $this->getContentTypeFields($contentTypeId);
+	public function getContentType($contentTypeId, $distinctFields) {
+		$options = array();
 		
+		$fieldData = $this->getContentTypeFields($contentTypeId, $distinctFields);
+
+		return $fieldData;
+	}
+
+	public function getContentTypeFieldOptions($contentTypeId, $buildOneDimensionalList = false) {
+		$fieldData = $this->getContentTypeFields($contentTypeId);
 		$options = array();
 
-		if(count($formElements) > 0) {
-			foreach($formElements as $field) {
-				$options[$field->config->field_name] = $field->config->name;
+
+		if($buildOneDimensionalList === true) {
+			foreach($fieldData['pages'] as $page) {
+				$pageOptions = array();
+				foreach($page->panel as $fieldId) {
+					$options[$fieldData['fields'][$fieldId]->config->field_name] = $page->name." - ".$fieldData['fields'][$fieldId]->config->name;
+				}
+			}
+
+			if($fieldData['parent']->_id) {
+				$parentData = $this->finishFieldArray($fieldData['parent']);
+				
+				foreach($parentData['pages'] as $page) {
+					$pageOptions = array();
+					foreach($page->panel as $fieldId) {
+						$options[$parentData['fields'][$fieldId]->config->field_name] = "Zugeordnet: ".$page->name." - ".$parentData['fields'][$fieldId]->config->name;
+					}
+				}
+				
 			}
 		}
-		
+		else {
+			foreach($fieldData['pages'] as $page) {
+				$pageOptions = array();
+				foreach($page->panel as $fieldId) {
+					$pageOptions[$fieldData['fields'][$fieldId]->config->field_name] = $fieldData['fields'][$fieldId]->config->name;
+				}
+				$options[$page->name] = $pageOptions;
+			}
+
+			if($fieldData['parent']->_id) {
+				$parentData = $this->finishFieldArray($fieldData['parent']);
+				
+				foreach($parentData['pages'] as $page) {
+					$pageOptions = array();
+					foreach($page->panel as $fieldId) {
+						$pageOptions[$parentData['fields'][$fieldId]->config->field_name] = $parentData['fields'][$fieldId]->config->name;
+					}
+					$options["Zugeordneter Inhaltstyp"][$page->name] = $pageOptions;
+				}
+				
+			}
+		}
+	
 		return $options;
 	}
 
-	public function getContentTypeFieldItems($contentTypeId, $fieldName) {
-		$formElements = $this->getContentTypeFields($contentTypeId);
+
+	public function getContentTypeFieldItems($contentTypeId, $fieldName, $distinctFields = array()) {
+		$fieldData = $this->getContentTypeFields($contentTypeId, $distinctFields);
 
 		$items = array();
-		
-		if(count($formElements) > 0) {
-			foreach($formElements as $field) {
+		if(count($fieldData['fields']) > 0) {
+			foreach($fieldData['fields'] as $field) {
+				
 				if($field->config->field_name == $fieldName) {
 					if($field->config->items) {
 						foreach($field->config->items as $item) {
-							$items[] = $item->name;
+							$items[$item->value] = $item->label;
 						}
 					}
 				}
@@ -114,21 +160,63 @@ class YnfiniteCommunicationService {
 		return $items;
 	}
 
-	public function getContentTypeFields($contentTypeId) {
-		$result = $this->doCurl($this->serverUrl."/v1/content_type/p/".$contentTypeId);
-		$result = json_decode($result);
+	public function getContentTypeFieldsList($contentTypeId) {
+		$fieldData = $this->getContentTypeFields($contentTypeId);		
 
-		$fields = $result->formElements;
-		if($result->parent->_id) {
-			$parentFields = array();
-			foreach($result->parent->formElements as $field) {
-				$field->config->field_name = "__parent__".$field->config->field_name;
-				$parentFields[] = $field;
+		$options = array();
+
+		foreach($fieldData['pages'] as $page) {
+			$pageOptions = array();
+			foreach($page->panel as $fieldId) {
+				$options[$fieldData['fields'][$fieldId]->config->field_name] = $fieldData['fields'][$fieldId];
 			}
-			$fields = array_merge($fields, $parentFields);
 		}
 
-		return $fields;
+		if($fieldData['parent']->_id) {
+			$parentData = $this->finishFieldArray($fieldData['parent']);
+			
+			foreach($parentData['pages'] as $page) {
+				$pageOptions = array();
+				foreach($page->panel as $fieldId) {
+					$options["__parent__".$parentData['fields'][$fieldId]->config->field_name] = $parentData['fields'][$fieldId];
+				}
+			}			
+		}
+
+		return $options;
+	}
+
+	public function getContentTypeFields($contentTypeId, $distinctFields = array()) {
+		$returnFields = array();
+		$fieldsByIdArray = array();
+		$params = array();
+
+		if(count($distinctFields) > 0) {
+			$params['distinct'] = $distinctFields;
+		}
+
+		$result = $this->doCurl($this->serverUrl."/v1/content_type/p/".$contentTypeId, "GET", $params);
+		$result = json_decode($result);
+		
+		return $this->finishFieldArray($result);
+	}
+
+	public function finishFieldArray($contentType){
+		$fields = $contentType->data;
+		
+		// Build fields by id array
+		foreach($fields as $field) {
+			$fieldsByIdArray[$field->_id] = $field;
+		}
+
+		return array("pages" => $contentType->pages, "fields" => $fieldsByIdArray, "parent" => $contentType->parent, "distinct" => $contentType->distinct);
+	}
+
+	public function getContentListWithTags($contentType, $filter, $tags, $debug) {
+		$filter["slug"] = $tags;
+		$result = $this->doCurl($this->serverUrl."/v1/tag/p/slug/content_type/".$contentType, "GET", $filter);
+		$result = json_decode($result);
+		return $result->hits;
 	}
 
 	public function getContentList($contentType, $filter, $debug) {
@@ -139,8 +227,6 @@ class YnfiniteCommunicationService {
 		/*$debug = $this->serverUrl."/v1/content_type/p/".$contentType."/content";
 
 		return array("result" => $result, "debug" => $debug, "filter" => $filter, "contentType" => $contentType, "sessioninfo" => curl_getinfo($this->curlSession));*/
-
-		
 	}
 
 	public function getContent($id, $contentTypeId) {
@@ -246,8 +332,8 @@ class YnfiniteCommunicationService {
 
 	private function buildTypeOptions($result) {
 		$options = array();
-		foreach($result as $contentType) {
-			$options[$contentType->_id] = $contentType->name;
+		foreach($result->hits->hits as $contentType) {
+			$options[$contentType->_id] = $contentType->settings->name;
 		}
 		return $options;
 	}
@@ -258,8 +344,7 @@ class YnfiniteCommunicationService {
 		if(count($values) > 0) $setFromRequest = true;
 
 		$filter = array(
-            "skip" => $skip,
-            "limit" => $perPage
+            "pagination" => array("skip" => $skip, "limit" => $perPage)
         );
         
         if($sort) {

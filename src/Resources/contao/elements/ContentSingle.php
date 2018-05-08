@@ -50,7 +50,7 @@ class ContentSingle extends \ContentElement {
             }
 
             if($contentId) {
-                $content = $loadDataService->getContent($contentId, $this->ynfinite_contentType);    
+                $content = $loadDataService->getContent($contentId, $this->ynfinite_contentType);
 
                 if($content) {
                     $this->Template->data = $content;

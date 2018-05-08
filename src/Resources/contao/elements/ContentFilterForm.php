@@ -36,9 +36,30 @@ class ContentFilterForm extends \ContentElement {
         $requestToken = $container->get('security.csrf.token_manager')->getToken($container->getParameter('contao.csrf_token_name'))->getValue();
 
         $outputFields = array();
-
+        $getDistinctValues = array();
         foreach($filterFields as $element) {
+            
+            if($element->valuesAsOptions) {
+                $getDistinctValues[] = $element->contentTypeField;
+            }
+            
     		$outputFields[$element->contentTypeField] = $element;
+        }
+        
+        if(count($getDistinctValues) > 0) {
+            $contentType = $loadDataService->getContentType($filter->contentType, $getDistinctValues);
+            $distincts = $contentType['distinct'];
+            
+            foreach($distincts as $key => $distinct) {
+                if($outputFields[$key] && $distinct) {
+                    foreach($distinct as $value) {
+                        $optionsArray[$value] = $value;
+                    }
+
+                    
+                    $outputFields[$key]->options = serialize($optionsArray);
+                }    
+            }
         }
 
         if($filter->jumpTo) {

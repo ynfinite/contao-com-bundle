@@ -109,7 +109,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter_form_fields'] = array
 		'default'                     => '{type_legend},type,label,contentTypeField,operation',
 		'text'                        => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},placeholder;{expert_legend:hide},class,value,accesskey,tabindex;{template_legend:hide},customTpl',
 		'range'                        => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},placeholder,placeholder2;{expert_legend:hide},class,value,accesskey,tabindex;{template_legend:hide},customTpl',
-		'select'                      => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},multiple;{options_legend},options;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl',
+		'select'                      => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},multiple;{options_legend},valuesAsOptions,options;{expert_legend:hide},class,accesskey,tabindex;{template_legend:hide},customTpl',
 		'checkbox'                    => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend};{options_legend},options;{expert_legend:hide},class;{template_legend:hide},customTpl',
 		'hidden'                      => '{type_legend},type,label,contentTypeField,operation;{fconfig_legend},value;{template_legend:hide},customTpl'
 	),
@@ -216,6 +216,14 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter_form_fields'] = array
 			'inputType'               => 'textarea',
 			'eval'                    => array('mandatory'=>true, 'allowHtml'=>true, 'class'=>'monospace', 'rte'=>'ace|html'),
 			'sql'                     => "text NULL"
+		),
+		'valuesAsOptions' => array
+		(
+			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_filter_form_fields']['valuesAsOptions'],
+			'exclude'                 => true,
+			'filter'                  => true,
+			'inputType'               => 'checkbox',
+			'sql'                     => "char(1) NOT NULL default ''"
 		),
 		'options' => array
 		(
@@ -804,7 +812,7 @@ class tl_ynfinite_filter_form_fields extends Backend
 			$typeId = $objFilter->contentType;
 
 			$loadDataService = \Contao\System::getContainer()->get("ynfinite.contao-com.listener.communication");
-	        $fieldOptions = $loadDataService->getContentTypeFieldOptions($typeId);
+	        $fieldOptions = $loadDataService->getContentTypeFieldOptions($typeId, true);
 
 			return $fieldOptions;
 		}

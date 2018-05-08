@@ -1,60 +1,82 @@
 <?php
-namespace Ynfinite;
 
-class ContentForm extends \ContentElement {
+namespace Ynfinite\ContaoComBundle\EventListener;
 
-	protected $strTemplate = 'ce_ynfinite_form';
+use Contao\CoreBundle\Framework\ContaoFrameworkInterface;
+use Contao\Config;
 
-    public function generate()
-    {
-        if (TL_MODE == 'BE')
-        {
-		    $retVal = "Ynfinit Form";
-		    return $retVal;
-        }
-        return parent::generate();
-    }
+use Ynfinite\YnfiniteCacheModel;
 
-    protected function compile() {
+use \DateTime;
 
-        if (TL_MODE == 'BE') {
-            $this->strTemplate = 'be_wildcard';
-            $this->Template = new \BackendTemplate($this->strTemplate);
-        }
+class YnfiniteFormGeneratorService {
 
+	private $framework;
+	private $config;
+
+	public function __construct(ContaoFrameworkInterface $framework) {
+		$this->framework = $framework;
+		$this->framework->initialize();
+
+		$this->config = $framework->getAdapter(Config::class);
+	}	
+
+	public function generateForm($form, $formElements) {
         $container = \Contao\System::getContainer();
 
-        // Get Services
-		$loadDataService = $container->get("ynfinite.contao-com.listener.communication");
-        $formGeneratorService = $container->get("ynfinite.contao-com.formgenerator");
 
-        $formId = $this->ynfinite_form_id;
-        $form = \Ynfinite\YnfiniteFormModel::findById($formId);
-
-        $formElements = $loadDataService->getContentTypeFieldsList($form->leadType);
-        $requestToken = $container->get('security.csrf.token_manager')->getToken($container->getParameter('contao.csrf_token_name'))->getValue();
+        $fields = unserialize($form->formFields);
         
-        $formData = $formGeneratorService->generateForm($form, $formElements);
+        $groupStarter = array();
+        if($form->groupStarter) $groupStarter = unserialize($form->groupStarter);
+        
+        $groupEnder = array();
+        if($form->groupEnder) $groupEnder = unserialize($form->groupEnder);
+		
+        uksort($formElements, function($key1, $key2) use ($fields, $formElements) {
+            $return = (array_search($formElements[$key1]->config->field_name, $fields) > array_search($formElements[$key2]->config->field_name, $fields) ? 1 : -1);
+            return $return;
+        });
 
-        $this->Template->cssData = $this->cssID;
-        $this->Template->requestToken = $requestToken;
-        $this->Template->formId = $formId;
-        $this->Template->leadType = $form->leadType;
-        $this->Template->uid = uniqid();
+		$realFieldNames = array();
+        $outputFields = array();
+        $validate = array();
+        $messages = array();
 
-        //$this->Template->fields = htmlspecialchars(json_encode($outputFields, JSON_FORCE_OBJECT), ENT_QUOTES, 'UTF-8');
-        $this->Template->fields = $formData['outputFields'];
-        $this->Template->validate = $formData['validate'];
-        $this->Template->messages = $formData['messages'];
-
-        $this->Template->groupStarter = $formData['groupStarter'];
-        $this->Template->groupEnder = $formData['groupEnder'];
-
-        $this->Template->submitLabel = $form->submitLabel;
-    }
+        foreach($formElements as $element) {
+        	
+            $key = array_keys($fields, $element->config->field_name);
+            $starter = array_keys($groupStarter, $element->config->field_name);
+            $ender = array_keys($groupEnder, $element->config->field_name);
 
 
-    function renderTextField($field, $starter, $ender) {
+            if($key) {
+                $markup = "";
+                switch($element->type) {
+                    case "checkbox":
+                        $markup = $this->renderCheckboxField($element, $starter, $ender);
+                        break;
+                    case "select":
+                        $markup = $this->renderSelectField($element, $starter, $ender);
+                        break;
+
+                    case "number":
+                    case "text":
+                        $markup = $this->renderTextField($element, $starter, $ender);
+                        break;
+                }
+                $validationData = $this->getValidationData($element);
+
+                $outputFields[$key[0]] = $markup;
+                $validate["data[".$element->config->field_name."]"] = $validationData['validation'];
+                $messages["data[".$element->config->field_name."]"] = $validationData['messages'];
+        	}
+        }
+
+        return array("outputFields" => $outputFields, "validate" => $validate, "messages" => $messages, "groupStarter" => $groupStarter, "groupEnder" => $groupEnder);
+	}
+
+	function renderTextField($field, $starter, $ender) {
         $label = $field->label;
         if(!$label) $label = ucfirst($field->config->name);
         if($field->config->mandatory === true) {
@@ -110,15 +132,15 @@ class ContentForm extends \ContentElement {
 
         // Build field markup
         $items = $field->config->items;
-        switch($field->config->selectType) {
+        switch($field->config->selecttype) {
             case "checkbox":
                 $markup = '<label for="'.$field->config->field_name.'">'.$label.'</label>';
                 foreach($items as $item) {
                     $markup .= '<div class="widget-inner-container">
                         <div class="widget-option-container">
-                            <input type="checkbox" name="data['.$field->config->field_name.']" value="'.$item->name.'" />
+                            <input type="checkbox" name="data['.$field->config->field_name.']" value="'.$item->value.'" />
                         </div>
-                        <label>'.$item->name.'</label>
+                        <label>'.$item->label.'</label>
                     </div>';
                 }
             break;
@@ -127,9 +149,9 @@ class ContentForm extends \ContentElement {
                 foreach($items as $item) {
                     $markup .= '<div class="widget-inner-container">
                         <div class="widget-option-container">
-                            <input type="radio" name="data['.$field->config->field_name.']" value="'.$item->name.'" />
+                            <input type="radio" name="data['.$field->config->field_name.']" value="'.$item->value.'" />
                         </div>
-                        <label>'.$item->name.'</label>
+                        <label>'.$item->label.'</label>
                     </div>';
                 }
             break;
@@ -139,14 +161,14 @@ class ContentForm extends \ContentElement {
                     <option value="" selected="selected">-</option>';
                 
                 foreach($items as $item) {
-                    $markup .= "<option value='".$item->name."'>".$item->name."</option>";    
+                    $markup .= "<option value='".$item->value."'>".$item->label."</option>";    
                 }
 
                 $markup .= "</select>";
             break;
         }
 
-        $return .= '<div class="widget '.$field->config->selectType.'" data-fieldname="'.$field->config->name.'">
+        $return .= '<div class="widget '.$field->config->selecttype.'" data-fieldname="'.$field->config->name.'">
             <input type="hidden" name="realFieldNames['.str_replace("__parent__", "", $field->config->field_name).']" value="'.$field->config->name.'" />
             '.$markup.'
         </div>';

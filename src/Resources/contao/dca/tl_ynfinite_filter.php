@@ -64,7 +64,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter'] = array(
         )
     ),
     'palettes'	=> array(
-        'default'   => '{information_legend},title,contentType,sortFields,sortDirection,alias;'
+        'default'   => '{information_legend},title,contentType,useTags,sortFields,sortDirection,alias;'
     ),
     'fields' 	=> array(
         'id'					=> array(
@@ -106,6 +106,14 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter'] = array(
             ),
             'sql'               => "varchar(255) NOT NULL default ''"
         ),
+        'useTags' => array
+        (
+            'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_filter']['useTags'],
+            'exclude'                 => true,
+            'filter'                  => true,
+            'inputType'               => 'checkbox',
+            'sql'                     => "char(1) NOT NULL default ''"
+        ),
         'sortFields'             => array(
             'label'             => &$GLOBALS['TL_LANG']['tl_ynfinite_filter']['sortFields'],
             'inputType'         => 'checkboxWizard',
@@ -142,8 +150,9 @@ class tl_ynfinite_filter extends Backend
     function getFields($strValue, DataContainer $dc) {
         $loadDataService = \Contao\System::getContainer()->get("ynfinite.contao-com.listener.communication");
         $fieldOptions = $loadDataService->getContentTypeFieldOptions($strValue);
+        $fieldOptionsSort = $loadDataService->getContentTypeFieldOptions($strValue, true);
 
-        $GLOBALS['TL_DCA']['tl_ynfinite_filter']['fields']['sortFields']['options'] = $fieldOptions;
+        $GLOBALS['TL_DCA']['tl_ynfinite_filter']['fields']['sortFields']['options'] = $fieldOptionsSort;
         $GLOBALS['TL_DCA']['tl_ynfinite_filter']['fields']['alias']['options'] = $fieldOptions;
 
         return $strValue;

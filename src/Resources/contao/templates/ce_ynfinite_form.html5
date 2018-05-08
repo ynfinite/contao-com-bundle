@@ -1,7 +1,7 @@
-<div id="container_<?= $this->Template->uid; ?>" class="ce_ynfinite_form block <?= $this->cssData[1]; ?>">
+<div ynfinite-id="container_<?= $this->Template->uid; ?>" class="ce_ynfinite_form block <?= $this->cssData[1]; ?>">
 	<div <?php if($this->cssData[0]) : ?> id="<?= $this->cssData[0]; ?>" <?php endif;?> class="form-container">
 		<div class="hidden send-error"></div>
-		<form id="form_<?= $this->Template->uid; ?>" data-sendAsync method="GET">
+		<form ynfinite-id="form_<?= $this->Template->uid; ?>" name="form_<?= $this->Template->uid; ?>" data-sendAsync method="GET">
 			<input type="hidden" name="REQUEST_TOKEN" value="{{request_token}}" />
 			<input type="hidden" name="formId" value="<?= $this->Template->formId; ?>" />
 			<?php foreach($this->Template->fields as $field) : 
@@ -17,23 +17,31 @@
 </div>
 
 <script>
-	$("#form_<?= $this->Template->uid; ?>").validate({
-		rules: {
-			<?php foreach($this->Template->validate as $key => $validationRule) : 
-				echo "'".$key."': ".$validationRule.", \n";
-			endforeach; ?>
-		},
-		messages: {
-			<?php foreach($this->Template->messages as $key => $message) : 
-				echo "'".$key."': ".$message.", \n";
-			endforeach; ?>
-		},
+	var rules = {
+		<?php foreach($this->Template->validate as $key => $validationRule) : 
+			echo "'".$key."': ".$validationRule.", \n";
+		endforeach; ?>
+	}
+
+	var messages = {
+		<?php foreach($this->Template->messages as $key => $message) : 
+			echo "'".$key."': ".$message.", \n";
+		endforeach; ?>
+	}
+
+	$("[ynfinite-id='form_<?= $this->Template->uid; ?>']").data("rules", rules);
+	$("[ynfinite-id='form_<?= $this->Template->uid; ?>']").data("messages", messages);
+
+
+	$("[ynfinite-id='form_<?= $this->Template->uid; ?>']").validate({
+		rules: rules,
+		messages: messages,
 		errorPlacement: function(error, element) {
     		error.appendTo( element.closest(".widget") );
   		}
 	});
 
-	$("#form_<?= $this->Template->uid; ?>").on("submit", function(e) {
+	$("[ynfinite-id='form_<?= $this->Template->uid; ?>']").on("submit", function(e) {
 		e.preventDefault();
 		if($(this).valid()) {
 			var data = $(this).serialize();
@@ -42,17 +50,16 @@
 			submitButton.attr("disabled", true);
 			submitButton.addClass("sending");
 
-			// Send mail
 			$.post("ynfinite/com/lead/send", data, function(data) {
 				if(data.mailSuccess) {
-					$("#container_<?= $this->Template->uid; ?>").find(".send-error").addClass("hidden");
-					$("#container_<?= $this->Template->uid; ?>").find(".form-container").addClass("hidden");
-					$result = $("#container_<?= $this->Template->uid; ?>").find(".result-container");
+					$("[ynfinite-id='container_<?= $this->Template->uid; ?>']").find(".send-error").addClass("hidden");
+					$("[ynfinite-id='container_<?= $this->Template->uid; ?>']").find(".form-container").addClass("hidden");
+					$result = $("[ynfinite-id='container_<?= $this->Template->uid; ?>']").find(".result-container");
 					$result.html(data.message);
 					$result.removeClass("hidden");
 				}
 				else {
-					$senderror = $("#container_<?= $this->Template->uid; ?>").find(".send-error");
+					$senderror = $("[ynfinite-id='container_<?= $this->Template->uid; ?>']").find(".send-error");
 					$senderror.html("<p>Beim versenden ist ein Fehler entstanden. Versuchen Sie es in ein paar Minuten noch einmal.</p>");
 					$senderror.removeClass("hidden");
 				}

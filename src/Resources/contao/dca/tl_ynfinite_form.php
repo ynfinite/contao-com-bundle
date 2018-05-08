@@ -232,7 +232,9 @@ class tl_ynfinite_form extends Backend
 
     function getContentType($strValue, DataContainer $dc) {
         $loadDataService = \Contao\System::getContainer()->get("ynfinite.contao-com.listener.communication");
-        $fieldOptions = $loadDataService->getContentTypeFieldOptions($strValue);
+        $fieldOptions = $loadDataService->getContentTypeFieldOptions($strValue, true);
+
+        var_dump($fieldOptions);
 
         $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['formFields']['options'] = $fieldOptions;
         $GLOBALS['TL_DCA']['tl_ynfinite_form']['fields']['groupStarter']['options'] = $fieldOptions;

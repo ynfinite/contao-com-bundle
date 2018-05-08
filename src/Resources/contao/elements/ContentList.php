@@ -26,6 +26,7 @@ class ContentList extends \ContentElement {
     protected function compile() {
 
         global $objYnfiniteContent;
+        global $objPage;
 
         if (TL_MODE == 'BE') {
             $this->strTemplate = 'be_wildcard';
@@ -45,8 +46,12 @@ class ContentList extends \ContentElement {
         $container = \Contao\System::getContainer();
 
         $loadDataService = $container->get("ynfinite.contao-com.listener.communication");
+        $formGeneratorService = $container->get("ynfinite.contao-com.formgenerator");
+
         $filterId = $this->ynfinite_filter_id;
         $filterFormId = $this->ynfinite_filter_form_id;
+        $showForm = $this->ynfinite_show_form;
+        $formId = $this->ynfinite_form_id;
         
         $contentType = null;
         $userFilter = array();
@@ -78,9 +83,10 @@ class ContentList extends \ContentElement {
 
             $filterFieldData = array();
 
+
             $arrFilter = null;
             if(!$userFilter) {
-                $arrFilter = $this->buildFilterArrayFromFilterFields($filterFields);                
+                $arrFilter = $this->buildFilterArrayFromFilterFields($filterFields);   
             }
             else {
                 $arrFilter = $this->buildFilterArrayFromUserFilterAndFilterForm($userFilter, $filterForm);
@@ -89,15 +95,38 @@ class ContentList extends \ContentElement {
             $filterData = $loadDataService->buildFilterData($arrFilter, $sort, $skip, $this->ynfinite_perPage);
         }
 
+        // If the base item is not set, we try to load it with the main content type from the page
+        if(!$objYnfiniteContent) {
+            $contentId = \Input::get('items');
+            if(!$contentId) {
+                $basename = pathinfo($_SERVER['REQUEST_URI'])['basename'];
+                $contentId = basename($basename, ".html");
+            }
+            if($contentId) {
+                $content = $loadDataService->getContent($contentId, $objPage->ynfinite_contentType);
+                if($content) {
+                    $objYnfiniteContent = $content;
+                }
+            }
+        }
 
 
-        $content = $loadDataService->getContentList($filter->contentType, $filterData, "");
+        if($filter->useTags && $objYnfiniteContent) {
+            $tags = array();
+            foreach($objYnfiniteContent->content->interessengruppen as $tag) {
+                $tags[] = $tag->slug;
+            }
+            $content = $loadDataService->getContentListWithTags($filter->contentType, $filterData, $tags, "");
+        }
+        else {
+            $content = $loadDataService->getContentList($filter->contentType, $filterData, "");
+        }
 
         $this->Template->debug = $content;
 
         if($this->ynfinite_jumpTo) {
-            $objPage = \Contao\PageModel::findWithDetails($this->ynfinite_jumpTo);
-            if($objPage) {
+            $objJumpToPage = \Contao\PageModel::findWithDetails($this->ynfinite_jumpTo);
+            if($objJumpToPage) {
                 $finalContent = array();
                 if(count($content->hits) > 0) {
                     foreach($content->hits as $singleContent) {
@@ -108,12 +137,23 @@ class ContentList extends \ContentElement {
                         else {
                             $alias = $singleContent->content->alias;
                         }
-                        $singleContent->jumpTo = $objPage->getFrontendUrl("/".$alias);
+                        $singleContent->jumpTo = $objJumpToPage->getFrontendUrl("/".$alias);
                         $finalContent[] = $singleContent;
                     }
                     $content->hits = $finalContent;
                 }
             }
+        }
+
+        // Redirect directly to the found item when there is just one.
+        if(count($content->hits) == 1 && $content->hits[0]->jumpTo) {
+            //var_dump($_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"]."/".$content->hits[0]->jumpTo);
+            header("Location: ".$_SERVER['REQUEST_SCHEME']."://".$_SERVER["HTTP_HOST"]."/".$content->hits[0]->jumpTo);
+            exit;
+        }
+
+        if(count($content->hits) === 0 && $showForm) {
+
         }
         
         $this->Template->data = $content;
@@ -193,13 +233,13 @@ class ContentList extends \ContentElement {
 
             $value = $comService->parseText($value, $objYnfiniteContent);
 
-            $arrFilter[$filterField->type_field] = array(
+            $arrFilter["content.".$filterField->type_field] = array(
                 "operation" => $this->operationMap[$filterField->operation],
                 "value" => $value
             );
 
             if($filterField->operation == "z") {
-                $arrFilter[$filterField->type_field]["value2"] = $filterField->value2;
+                $arrFilter["content.".$filterField->type_field]["value2"] = $filterField->value2;
             }
         }
         return $arrFilter;
@@ -220,17 +260,16 @@ class ContentList extends \ContentElement {
             }
             
             if($value !== "") {            
-                $arrFilter[$filterField->contentTypeField] = array(
+                $arrFilter["content.".$filterField->contentTypeField] = array(
                     "operation" => $this->operationMap[$filterField->operation],
                     "value" => $value
                 );
 
                 if($filterField->operation == "z") {
-                    $arrFilter[$filterField->contentTypeField]["value2"] = $userFilter[$filterField->contentTypeField][1];
+                    $arrFilter["content.".$filterField->contentTypeField]["value2"] = $userFilter[$filterField->contentTypeField][1];
                 }
             }
         }
-
         return $arrFilter;
     }
 }

@@ -2,12 +2,14 @@
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_form'] = '{type_legend},type,headline,ynfinite_form_id,cssID';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_filter_form'] = '{type_legend},type,headline,ynfinite_filter_form_id,ynfinite_new_window,ynfinite_template,cssID';
-$GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_content_list'] = '{type_legend},type,headline,ynfinite_filter_id,ynfinite_filter_form_id,ynfinite_perPage,ynfinite_jumpTo,ynfinite_template,cssID';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_content_list'] = '{type_legend},type,headline,ynfinite_filter_id,ynfinite_filter_form_id,ynfinite_perPage,ynfinite_show_form,ynfinite_jumpTo,ynfinite_template,cssID';
 $GLOBALS['TL_DCA']['tl_content']['palettes']['ynfinite_content_single'] = '{type_legend},type,headline,ynfinite_contentType,ynfinite_content_id,ynfinite_template;{title_legend},ynfinite_set_page_title';
 
 $GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'ynfinite_set_page_title';
+$GLOBALS['TL_DCA']['tl_content']['palettes']['__selector__'][] = 'ynfinite_show_form';
 
 $GLOBALS['TL_DCA']['tl_content']['subpalettes']['ynfinite_set_page_title'] = 'ynfinite_title_field';
+$GLOBALS['TL_DCA']['tl_content']['subpalettes']['ynfinite_show_form'] = 'ynfinite_form_id';
 
 $GLOBALS['TL_DCA']['tl_content']['fields']['ynfinite_form_id'] = array (
     'label' => &$GLOBALS['TL_LANG']['tl_content']['ynfinite_form_id'],
@@ -76,6 +78,14 @@ $GLOBALS['TL_DCA']['tl_content']['fields']['ynfinite_perPage'] = array (
         'tl_class'=>'clr'
     ),
     'sql'   => "int(10) unsigned NOT NULL default '0'"
+);
+
+$GLOBALS['TL_DCA']['tl_content']['fields']['ynfinite_show_form'] = array (
+    'label'                   => &$GLOBALS['TL_LANG']['tl_content']['ynfinite_show_form'],
+    'exclude'                 => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('submitOnChange'=>true),
+    'sql'                     => "char(1) NOT NULL default ''"
 );
 
 /** FIELDS FOR SINGLE CONTENT **/
