@@ -80,6 +80,37 @@ class YnfiniteCommunicationService {
 		return $this->buildTypeOptions($result);
 	}
 
+	public function fetchTagGroups() {
+		$result = $this->doCurl($this->serverUrl."/v1/tag_group/p/");
+		$result = json_decode($result);
+
+		if($result->error) {
+			return $this->generateError();
+		}
+		
+		$options = array();
+		foreach($result->hits->hits as $tagGroup) {
+			$options[$tagGroup->_id] = $tagGroup->name;
+		}
+		return $options;
+	}
+
+	public function fetchTags($tagGroupId) {
+		$options = array();
+		if($tagGroupId) {
+			$result = $this->doCurl($this->serverUrl."/v1/tag_group/p/".$tagGroupId."/tags");
+			$result = json_decode($result);
+			if($result->error) {
+				return $this->generateError();
+			}
+
+			foreach($result->hits->hits as $tag) {
+				$options[$tag->slug] = $tag->name;
+			}
+		}
+		return $options;
+	}
+
 	public function getContentType($contentTypeId, $distinctFields) {
 		$options = array();
 		
@@ -91,7 +122,6 @@ class YnfiniteCommunicationService {
 	public function getContentTypeFieldOptions($contentTypeId, $buildOneDimensionalList = false) {
 		$fieldData = $this->getContentTypeFields($contentTypeId);
 		$options = array();
-
 
 		if($buildOneDimensionalList === true) {
 			foreach($fieldData['pages'] as $page) {

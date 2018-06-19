@@ -49,7 +49,6 @@ class YnfiniteFormGeneratorService {
             $starter = array_keys($groupStarter, $element->config->field_name);
             $ender = array_keys($groupEnder, $element->config->field_name);
 
-
             if($key) {
                 $markup = "";
                 switch($element->type) {
@@ -59,7 +58,9 @@ class YnfiniteFormGeneratorService {
                     case "select":
                         $markup = $this->renderSelectField($element, $starter, $ender);
                         break;
-
+                    case "privacy":
+                        $markup = $this->renderPrivacyField($element, $starter, $ender);
+                        break;
                     case "number":
                     case "text":
                         $markup = $this->renderTextField($element, $starter, $ender);
@@ -219,6 +220,42 @@ class YnfiniteFormGeneratorService {
         return $return;
     }
 
+    function renderPrivacyField($field, $filterData, $formUuid) {
+        $markup = "";
+
+        // Build label
+        $label = $field->config->privacy;
+        $label = str_replace("{{privacy}}", "<a href='".$field->config->privacy_url."' target='_blank' title='Zum Datenschutz'>".$field->config->privacy_word."</a>", $label);
+        $label .="<span class'required'>*</span>";
+
+        // Check if its a group starter
+        $return = "";
+        if($starter) {
+            $return .= "<div class='field-group'>";
+        }
+
+        // Build field markup
+        $markup .= '<div class="widget-inner-container">
+            <div class="widget-option-container">
+                <input type="checkbox" name="data['.$field->config->field_name.']" value="'.$field->config->name.'" />
+            </div>
+            <label>'.$label.'</label>
+        </div>';
+
+
+        $return .= '<div class="widget checkbox" data-fieldname="'.$field->config->name.'">
+            <input type="hidden" name="realFieldNames['.str_replace("__parent__", "", $field->config->field_name).']" value="'.$field->config->name.'" />
+            '.$markup.'
+        </div>';
+
+        // Check if its end of group
+        if($ender) {
+            $return .= "</div>";
+        }
+        
+        return $return;
+    }    
+
     function renderHiddenField($field, $filterData, $formUuid) {        
         return '<input type="hidden" value="'.$field->value.'" name="data['.$field->config->field_name.']" />';
     }
@@ -237,6 +274,12 @@ class YnfiniteFormGeneratorService {
             $validation[] = "required: true";
             $messages[] = "required: 'Bitte füllen Sie dieses Feld aus.'";
         }
+
+        if($field->type == "privacy"){
+            $validation[] = "required: true";
+            $messages[] = "required: 'Bitte lesen und akzeptieren Sie unseren Datenschutz.'";   
+        }
+
         $validationString .= implode(",", $validation)."}";
         $messageString .= implode(",", $messages)."}";
 
