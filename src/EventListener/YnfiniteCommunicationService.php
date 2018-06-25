@@ -96,7 +96,7 @@ class YnfiniteCommunicationService {
 	}
 
 	public function fetchTags($tagGroupId) {
-		$options = array();
+		$options = array("options" => array(), "raw" => array());
 		if($tagGroupId) {
 			$result = $this->doCurl($this->serverUrl."/v1/tag_group/p/".$tagGroupId."/tags");
 			$result = json_decode($result);
@@ -105,7 +105,8 @@ class YnfiniteCommunicationService {
 			}
 
 			foreach($result->hits->hits as $tag) {
-				$options[$tag->slug] = $tag->name;
+				$options['options'][$tag->slug] = $tag->name;
+				$options['raw'][$tag->slug] = json_encode($tag);
 			}
 		}
 		return $options;
