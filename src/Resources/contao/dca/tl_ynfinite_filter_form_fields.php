@@ -131,7 +131,7 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter_form_fields'] = array
 		),
 		'pid' => array
 		(
-			'foreignKey'              => 'tl_ynfinite_filter_form.title',
+			'foreignKey'              => 'tl_ynfinite_filter_form.id',
 			'sql'                     => "int(10) unsigned NOT NULL default '0'",
 			'relation'                => array('type'=>'belongsTo', 'load'=>'lazy')
 		),
@@ -172,12 +172,11 @@ $GLOBALS['TL_DCA']['tl_ynfinite_filter_form_fields'] = array
 		'operation' => array
 		(
 			'label'                   => &$GLOBALS['TL_LANG']['tl_ynfinite_filter_form_fields']['operation'],
-			'default'                 => 'text',
 			'exclude'                 => true,
 			'filter'                  => true,
 			'inputType'               => 'select',
 			'options_callback'        => array('tl_ynfinite_filter_form_fields', 'getOperations'),
-			'eval'                    => array('helpwizard'=>true, 'tl_class'=>'w100'),
+			'eval'                    => array('tl_class'=>'w100'),
 			'sql'                     => "varchar(64) NOT NULL default ''"
 		),
 		'label' => array // "label" needs to come before "name" so it gets the "(copy)" suffix (see #1062)
@@ -843,6 +842,7 @@ class tl_ynfinite_filter_form_fields extends Backend
 
 	public function getOperations() {
 		$arrOperations = $GLOBALS['TL_YNFINITE_FILTER_OPERATIONS'];
+		var_dump($arrOperations);
 		return $arrOperations;
 	}
 

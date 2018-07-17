@@ -175,7 +175,7 @@ class tl_content_ynfinite extends \tl_content {
 
    function getFiltersForms() {
         $returnArr = array();
-        $objForms = $this->Database->prepare("SELECT id, title FROM tl_ynfinite_filter_fields")->execute();
+        $objForms = $this->Database->prepare("SELECT id, title FROM tl_ynfinite_filter_form")->execute();
 
         if ($objForms->numRows){
             while($objForms->next()) {

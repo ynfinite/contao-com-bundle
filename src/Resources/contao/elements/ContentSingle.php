@@ -72,7 +72,9 @@ class ContentSingle extends \ContentElement {
             
             if($this->ynfinite_set_page_title) {
                 $titelField = $this->ynfinite_title_field;
-                $objPage->pageTitle = $content->content->$titelField;
+                if($titelField) {
+                    $objPage->pageTitle = $content->content->$titelField;
+                }
             }
         }
         else {

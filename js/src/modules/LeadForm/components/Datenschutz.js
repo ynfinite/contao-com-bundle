@@ -8,40 +8,42 @@ class Datenschutz extends Component {
 	}
 
 	handleChange(event) {
-		this.props.changeFieldData("datenschutz", event.target.checked);
+		this.props.changeFieldData('datenschutz', event.target.checked);
 	}
 
 	render() {
 		let widgetClasses = 'widget checkboxContainer';
-		if(this.props.error) {
-			widgetClasses += " hasError";
+		if (this.props.error) {
+			widgetClasses += ' hasError';
 		}
 
 		return (
 			<div className={widgetClasses}>
 				<div className="checkbox">
-					{this.props.checked ?
-						<input type="checkbox" value="Datenschutz angenommen" name="datenschutz" onChange={this.handleChange} checked />
-					:
-						<input type="checkbox" value="Datenschutz angenommen" name="datenschutz" onChange={this.handleChange} />
-					}
+					{this.props.checked ? (
+						<input
+							type="checkbox"
+							value="Datenschutz angenommen"
+							name="datenschutz"
+							onChange={this.handleChange}
+							checked
+						/>
+					) : (
+						<input
+							type="checkbox"
+							value="Datenschutz angenommen"
+							name="datenschutz"
+							onChange={this.handleChange}
+						/>
+					)}
 					<label htmlFor="datenschutz">
-						Hiermit bestätigen Sie die Übermittlung Ihrer Daten an Larbig & Mortag.
-						{
-							this.props.mandatory ?
-								<span className="isMandatory">*</span>
-							:
-							""
-						}
+						Hiermit bestätigen Sie die Übermittlung Ihrer Daten.
+						{this.props.mandatory ? <span className="isMandatory">*</span> : ''}
 					</label>
 				</div>
-				{this.props.error ?
-					<div className="error">{this.props.error}</div>
-				:
-					""
-				}
+				{this.props.error ? <div className="error">{this.props.error}</div> : ''}
 			</div>
-		)
+		);
 	}
 }
 

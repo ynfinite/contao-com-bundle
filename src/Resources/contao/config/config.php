@@ -46,8 +46,16 @@
 
 	/* YNFINITE DATA */
 
+	/*$GLOBALS['TL_YNFINITE_FILTER_OPERATIONS'] = array(
+		"==" => "gleich und beinhaltet" , 
+		"<=" => "kleiner gleich" , 
+		">=" => "größer gleich", 
+		"<==>" => "zwischen", 
+		"!==" => "ungleich"
+	);*/
+
 	$GLOBALS['TL_YNFINITE_FILTER_OPERATIONS'] = array(
-		"b" => "beinhaltet" , 
+		"gb" => "gleich und beinhaltet" , 
 		"kg" => "kleiner gleich" , 
 		"gg" => "größer gleich", 
 		"z" => "zwischen", 

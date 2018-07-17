@@ -6,7 +6,7 @@ class ContentList extends \ContentElement {
 	protected $strTemplate = 'ce_ynfinite_content_list';
 
     private $operationMap = array(
-        "b" => "==",
+        "gb" => "==",
         "kg" => "<=",
         "gg" => ">=",
         "z" => "<==>",
