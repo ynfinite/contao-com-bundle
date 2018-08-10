@@ -69,6 +69,18 @@ class YnfiniteCommunicationService {
 		return $this->buildTypeOptions($result);
 	}
 
+	public function fetchContentLeadType(){
+		$result = $this->doCurl($this->serverUrl."/v1/content_type/p/lead");
+		$result = json_decode($result);
+
+		if($result->error) {
+		    return $this->generateError();
+		}
+
+		return $this->buildTypeOptions($result);
+    }
+
+	
 	public function fetchContentTypesContent() {
 		$result = $this->doCurl($this->serverUrl."/v1/content_type/p/content");
 		$result = json_decode($result);
